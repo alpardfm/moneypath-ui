@@ -132,18 +132,18 @@ Allow user to manage wallets.
 Allow user to manage debts clearly.
 
 ## Tasks
-- [ ] create debt list page
-- [ ] create add debt page
-- [ ] create debt detail page
-- [ ] create edit debt page
-- [ ] connect debt list API
-- [ ] connect create debt API
-- [ ] connect debt detail API
-- [ ] connect update debt API
-- [ ] connect inactivate debt API
-- [ ] display debt status clearly
-- [ ] display remaining debt clearly
-- [ ] ensure debt UI remains readable on mobile
+- [x] create debt list page
+- [x] create add debt page
+- [x] create debt detail page
+- [x] create edit debt page
+- [x] connect debt list API
+- [x] connect create debt API
+- [x] connect debt detail API
+- [x] connect update debt API
+- [x] connect inactivate debt API
+- [x] display debt status clearly
+- [x] display remaining debt clearly
+- [x] ensure debt UI remains readable on mobile
 
 ## Output
 - debt flow works end-to-end

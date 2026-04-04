@@ -3,6 +3,8 @@ import AppShell from './layout/AppShell.jsx'
 import PublicOnlyRoute from '../features/auth/PublicOnlyRoute.jsx'
 import ProtectedRoute from '../features/auth/ProtectedRoute.jsx'
 import DashboardPage from '../pages/DashboardPage.jsx'
+import DebtDetailPage from '../pages/DebtDetailPage.jsx'
+import DebtPage from '../pages/DebtPage.jsx'
 import LoginPage from '../pages/LoginPage.jsx'
 import NotFoundPage from '../pages/NotFoundPage.jsx'
 import RegisterPage from '../pages/RegisterPage.jsx'
@@ -48,6 +50,14 @@ export const router = createBrowserRouter([
       {
         path: 'wallets',
         element: <WalletPage />,
+      },
+      {
+        path: 'debts',
+        element: <DebtPage />,
+      },
+      {
+        path: 'debts/:debtId',
+        element: <DebtDetailPage />,
       },
     ],
   },
