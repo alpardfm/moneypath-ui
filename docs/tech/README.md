@@ -16,3 +16,5 @@ Dokumen di folder ini fokus ke hal yang sudah benar-benar ada di codebase, supay
   Ringkasan dashboard MVP: endpoint overview, kartu metrik utama, daftar wallet aktif, dan state handling dashboard.
 - `phase-4-wallets.md`  
   Ringkasan wallet module MVP: wallet list, create/edit flow, inactivate wallet, dan aturan wallet aktif.
+- `phase-5-debts.md`  
+  Ringkasan debt module MVP: debt list, create/detail/edit flow, inactivate debt, dan status debt dari backend.
