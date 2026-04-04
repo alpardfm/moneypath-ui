@@ -22,3 +22,5 @@ Dokumen di folder ini fokus ke hal yang sudah benar-benar ada di codebase, supay
   Ringkasan mutation module MVP: list/create/edit flow, filter dan pagination, aturan relasi debt, dan no-delete UI.
 - `phase-7-summary.md`  
   Ringkasan summary module MVP: filter rentang tanggal, metrik ringkasan periode, net flow, dan saldo wallet aktif.
+- `phase-8-profile.md`  
+  Ringkasan profile module MVP: ambil profil saat ini, update data akun, ganti password, dan feedback yang sederhana.
