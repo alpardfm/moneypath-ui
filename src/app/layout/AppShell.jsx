@@ -7,6 +7,7 @@ const navigationItems = [
   { label: 'Wallets', shortLabel: 'Wallet', to: '/app/wallets', enabled: true },
   { label: 'Debts', shortLabel: 'Debt', to: '/app/debts', enabled: true },
   { label: 'Mutations', shortLabel: 'Flow', to: '/app/mutations', enabled: true },
+  { label: 'Ringkasan', shortLabel: 'Ringkas', to: '/app/summary', enabled: true },
 ]
 
 function AppShell() {
@@ -78,7 +79,7 @@ function AppShell() {
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur md:hidden">
         <PageContainer className="px-0" size="app">
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-5 gap-2">
             {navigationItems.map((item) =>
               item.enabled ? (
                 <NavLink
