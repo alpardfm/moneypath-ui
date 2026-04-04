@@ -18,17 +18,17 @@ Frontend direction:
 Prepare a clean frontend foundation.
 
 ## Tasks
-- [ ] initialize React + Vite project
-- [ ] install Tailwind CSS
-- [ ] setup base folder structure
-- [ ] setup React Router
-- [ ] setup environment variables
-- [ ] setup API base configuration
-- [ ] setup shared layout foundation
-- [ ] setup protected route pattern
-- [ ] setup error and loading patterns
-- [ ] setup README, TODO, RULE docs
-- [ ] setup basic eslint / formatting config
+- [x] initialize React + Vite project
+- [x] install Tailwind CSS
+- [x] setup base folder structure
+- [x] setup React Router
+- [x] setup environment variables
+- [x] setup API base configuration
+- [x] setup shared layout foundation
+- [x] setup protected route pattern
+- [x] setup error and loading patterns
+- [x] setup README, TODO, RULE docs
+- [x] setup basic eslint / formatting config
 
 ## Output
 - app runs locally
