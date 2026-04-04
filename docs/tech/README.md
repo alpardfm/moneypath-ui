@@ -18,3 +18,5 @@ Dokumen di folder ini fokus ke hal yang sudah benar-benar ada di codebase, supay
   Ringkasan wallet module MVP: wallet list, create/edit flow, inactivate wallet, dan aturan wallet aktif.
 - `phase-5-debts.md`  
   Ringkasan debt module MVP: debt list, create/detail/edit flow, inactivate debt, dan status debt dari backend.
+- `phase-6-mutations.md`  
+  Ringkasan mutation module MVP: list/create/edit flow, filter dan pagination, aturan relasi debt, dan no-delete UI.

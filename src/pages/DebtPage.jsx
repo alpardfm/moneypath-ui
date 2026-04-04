@@ -9,6 +9,7 @@ import DebtForm from '../features/debts/DebtForm.jsx'
 import { createDebt, listDebts } from '../features/debts/debt-service.js'
 import { createDebtFormFromItem, getDebtStatusLabel, getDebtStatusTone } from '../features/debts/debt-utils.js'
 import { formatAmount } from '../utils/format-number.js'
+import { sanitizeDigits } from '../utils/sanitize-input.js'
 
 const initialForm = createDebtFormFromItem()
 
@@ -51,10 +52,12 @@ function DebtPage() {
 
   const handleChange = (event) => {
     const { name, value } = event.target
+    const numberOnlyFields = ['principalAmount', 'paymentAmount']
+    const nextValue = numberOnlyFields.includes(name) ? sanitizeDigits(value) : value
 
     setForm((currentForm) => ({
       ...currentForm,
-      [name]: value,
+      [name]: nextValue,
     }))
 
     setErrors((currentErrors) => ({
@@ -94,7 +97,7 @@ function DebtPage() {
 
       const createdDebt = await createDebt(form)
       setDebts((currentDebts) => [createdDebt, ...currentDebts])
-      setForm(initialForm)
+      setForm(createDebtFormFromItem())
       setErrors({})
       setFormSuccess('Debt baru berhasil dibuat.')
 

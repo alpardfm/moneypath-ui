@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import EmptyState from '../components/feedback/EmptyState.jsx'
 import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
-import { createWallet, inactivateWallet, listWallets, updateWallet } from '../features/wallets/wallet-service.js'
+import { createWallet, inactivateWallet, listWallets } from '../features/wallets/wallet-service.js'
 import WalletForm from '../features/wallets/WalletForm.jsx'
 import { formatAmount } from '../utils/format-number.js'
 
@@ -13,6 +14,7 @@ const initialForm = {
 }
 
 function WalletPage() {
+  const location = useLocation()
   const [wallets, setWallets] = useState([])
   const [meta, setMeta] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -22,7 +24,6 @@ function WalletPage() {
   const [formError, setFormError] = useState('')
   const [formSuccess, setFormSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [editingWallet, setEditingWallet] = useState(null)
   const [inactivatingWalletID, setInactivatingWalletID] = useState('')
 
   const loadWallets = async () => {
@@ -44,6 +45,12 @@ function WalletPage() {
     loadWallets()
   }, [])
 
+  useEffect(() => {
+    if (location.state?.message) {
+      setFormSuccess(location.state.message)
+    }
+  }, [location.state])
+
   const handleChange = (event) => {
     const { name, value } = event.target
 
@@ -62,7 +69,6 @@ function WalletPage() {
     setForm(initialForm)
     setErrors({})
     setFormError('')
-    setEditingWallet(null)
   }
 
   const validateForm = () => {
@@ -90,22 +96,14 @@ function WalletPage() {
       setFormError('')
       setFormSuccess('')
 
-      if (editingWallet) {
-        const updatedWallet = await updateWallet(editingWallet.id, form)
-        setWallets((currentWallets) =>
-          currentWallets.map((wallet) => (wallet.id === editingWallet.id ? updatedWallet : wallet)),
-        )
-        setFormSuccess('Nama wallet berhasil diperbarui.')
-      } else {
-        const newWallet = await createWallet(form)
-        setWallets((currentWallets) => [newWallet, ...currentWallets])
-        setFormSuccess('Wallet baru berhasil dibuat.')
-        if (meta) {
-          setMeta({
-            ...meta,
-            total_items: (meta.total_items || 0) + 1,
-          })
-        }
+      const newWallet = await createWallet(form)
+      setWallets((currentWallets) => [newWallet, ...currentWallets])
+      setFormSuccess('Wallet baru berhasil dibuat.')
+      if (meta) {
+        setMeta({
+          ...meta,
+          total_items: (meta.total_items || 0) + 1,
+        })
       }
 
       resetFormState()
@@ -114,21 +112,6 @@ function WalletPage() {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const handleEdit = (wallet) => {
-    setEditingWallet(wallet)
-    setForm({
-      name: wallet.name || '',
-    })
-    setErrors({})
-    setFormError('')
-    setFormSuccess('')
-  }
-
-  const handleCancelEdit = () => {
-    resetFormState()
-    setFormSuccess('')
   }
 
   const handleInactivate = async (wallet) => {
@@ -140,9 +123,6 @@ function WalletPage() {
       await inactivateWallet(wallet.id)
       setWallets((currentWallets) => currentWallets.filter((item) => item.id !== wallet.id))
       setFormSuccess(`Wallet ${wallet.name} berhasil dinonaktifkan.`)
-      if (editingWallet?.id === wallet.id) {
-        resetFormState()
-      }
       if (meta) {
         setMeta({
           ...meta,
@@ -231,13 +211,12 @@ function WalletPage() {
                         </div>
 
                         <div className="flex flex-col gap-2 sm:w-auto sm:items-end">
-                          <button
-                            type="button"
-                            onClick={() => handleEdit(wallet)}
+                          <Link
+                            to={`/app/wallets/${wallet.id}`}
                             className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
                           >
-                            Edit
-                          </button>
+                            Lihat detail
+                          </Link>
                           <button
                             type="button"
                             onClick={() => handleInactivate(wallet)}
@@ -263,13 +242,12 @@ function WalletPage() {
         </section>
 
         <WalletForm
-          mode={editingWallet ? 'edit' : 'create'}
+          mode="create"
           form={form}
           errors={errors}
           isSubmitting={isSubmitting}
           onChange={handleChange}
           onSubmit={handleSubmit}
-          onCancel={handleCancelEdit}
         />
       </div>
     </PageContainer>

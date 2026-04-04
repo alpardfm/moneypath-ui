@@ -1,4 +1,5 @@
 import { api } from '../../services/api.js'
+import { extractApiMessage } from '../../utils/api-message.js'
 
 function extractToken(payload) {
   if (!payload || typeof payload !== 'object') {
@@ -32,39 +33,7 @@ function extractToken(payload) {
 }
 
 function extractMessage(payload, fallbackMessage) {
-  if (!payload) {
-    return fallbackMessage
-  }
-
-  if (typeof payload === 'string') {
-    return payload
-  }
-
-  if (payload.message && typeof payload.message === 'string') {
-    return payload.message
-  }
-
-  if (payload.error && typeof payload.error === 'string') {
-    return payload.error
-  }
-
-  const errors = payload.errors && typeof payload.errors === 'object' ? payload.errors : null
-
-  if (errors) {
-    const firstError = Object.values(errors).flat().find(Boolean)
-
-    if (typeof firstError === 'string') {
-      return firstError
-    }
-  }
-
-  const nestedData = payload.data && typeof payload.data === 'object' ? payload.data : null
-
-  if (nestedData?.message && typeof nestedData.message === 'string') {
-    return nestedData.message
-  }
-
-  return fallbackMessage
+  return extractApiMessage(payload, fallbackMessage)
 }
 
 function createAuthError(error, fallbackMessage) {

@@ -41,11 +41,13 @@ function DebtForm({
           <FormField
             id="principalAmount"
             label="Nominal pokok"
+            type="text"
+            inputMode="numeric"
             value={form.principalAmount}
             onChange={onChange}
             placeholder="Contoh: 1500000"
             error={errors.principalAmount}
-            hint="Nilai ini hanya diisi saat create debt."
+            hint="Hanya angka. Nilai ini hanya diisi saat create debt."
           />
         ) : null}
 
@@ -72,9 +74,12 @@ function DebtForm({
         <FormField
           id="paymentAmount"
           label="Nominal cicilan"
+          type="text"
+          inputMode="numeric"
           value={form.paymentAmount}
           onChange={onChange}
           placeholder="Contoh: 250000"
+          hint="Hanya angka."
           error={errors.paymentAmount}
         />
 

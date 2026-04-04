@@ -71,6 +71,15 @@ Frontend menampilkan informasi berikut:
 - tenor
 - payment amount
 - note
+- riwayat mutasi terkait debt pada halaman detail
+
+---
+
+## Catatan UX Tambahan
+
+- field nominal debt di UI dibatasi ke angka saja
+- halaman detail debt menampilkan mutasi terkait debt tanpa harus pindah ke halaman mutation
+- riwayat mutasi ini bersifat ringkas dan fokus ke context debt, bukan pengganti halaman mutation penuh
 
 ---
 

@@ -7,6 +7,7 @@ Scope phase ini:
 - wallet list
 - create wallet
 - edit wallet
+- wallet detail
 - inactivate wallet
 - empty state
 - validation dan error state
@@ -18,6 +19,7 @@ Scope phase ini:
 Wallet module memakai endpoint berikut:
 
 - `GET /wallets`
+- `GET /wallets/{walletID}`
 - `POST /wallets`
 - `PUT /wallets/{walletID}`
 - `DELETE /wallets/{walletID}`
@@ -44,6 +46,7 @@ Karena itu frontend:
 ## File Utama
 
 - `src/pages/WalletPage.jsx`
+- `src/pages/WalletDetailPage.jsx`
 - `src/features/wallets/wallet-service.js`
 - `src/features/wallets/WalletForm.jsx`
 
@@ -54,12 +57,14 @@ Karena itu frontend:
 Halaman wallet dibagi menjadi dua area utama:
 
 - area list wallet aktif
-- area form create/edit wallet
+- area form create wallet
+- halaman detail wallet untuk edit dan riwayat mutasi
 
 Pendekatan ini dipilih supaya:
 
-- desktop tetap nyaman karena list dan form bisa berdampingan
+- desktop tetap nyaman karena list dan form create bisa berdampingan
 - mobile tetap sederhana karena semua konten tetap menumpuk secara natural
+- aksi edit tidak terasa ambigu karena sekarang dilakukan dari halaman detail wallet
 
 ---
 
@@ -73,8 +78,9 @@ Wallet page menangani state berikut:
 - submit loading
 - submit success
 - submit error
-- edit mode
 - inactivate in progress
+- detail wallet loading
+- riwayat mutasi wallet loading
 
 ---
 
@@ -82,10 +88,9 @@ Wallet page menangani state berikut:
 
 Phase ini belum mencakup:
 
-- wallet detail page terpisah
 - pagination UI
 - filter/search wallet
-- riwayat mutasi per wallet
+- filter lanjutan untuk riwayat mutasi per wallet
 
 ---
 

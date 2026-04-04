@@ -6,8 +6,11 @@ import DashboardPage from '../pages/DashboardPage.jsx'
 import DebtDetailPage from '../pages/DebtDetailPage.jsx'
 import DebtPage from '../pages/DebtPage.jsx'
 import LoginPage from '../pages/LoginPage.jsx'
+import MutationEditPage from '../pages/MutationEditPage.jsx'
+import MutationPage from '../pages/MutationPage.jsx'
 import NotFoundPage from '../pages/NotFoundPage.jsx'
 import RegisterPage from '../pages/RegisterPage.jsx'
+import WalletDetailPage from '../pages/WalletDetailPage.jsx'
 import WalletPage from '../pages/WalletPage.jsx'
 
 export const router = createBrowserRouter([
@@ -52,12 +55,24 @@ export const router = createBrowserRouter([
         element: <WalletPage />,
       },
       {
+        path: 'wallets/:walletId',
+        element: <WalletDetailPage />,
+      },
+      {
         path: 'debts',
         element: <DebtPage />,
       },
       {
         path: 'debts/:debtId',
         element: <DebtDetailPage />,
+      },
+      {
+        path: 'mutations',
+        element: <MutationPage />,
+      },
+      {
+        path: 'mutations/:mutationId',
+        element: <MutationEditPage />,
       },
     ],
   },

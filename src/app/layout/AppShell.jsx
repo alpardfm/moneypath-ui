@@ -6,7 +6,7 @@ const navigationItems = [
   { label: 'Dashboard', shortLabel: 'Home', to: '/app/dashboard', enabled: true },
   { label: 'Wallets', shortLabel: 'Wallet', to: '/app/wallets', enabled: true },
   { label: 'Debts', shortLabel: 'Debt', to: '/app/debts', enabled: true },
-  { label: 'Mutations', shortLabel: 'Flow', enabled: false },
+  { label: 'Mutations', shortLabel: 'Flow', to: '/app/mutations', enabled: true },
 ]
 
 function AppShell() {

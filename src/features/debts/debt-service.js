@@ -1,27 +1,8 @@
 import { api } from '../../services/api.js'
-
-function getMessage(payload, fallbackMessage) {
-  if (!payload) {
-    return fallbackMessage
-  }
-
-  if (typeof payload === 'string') {
-    return payload
-  }
-
-  if (typeof payload.message === 'string') {
-    return payload.message
-  }
-
-  if (typeof payload.error === 'string') {
-    return payload.error
-  }
-
-  return fallbackMessage
-}
+import { extractApiMessage } from '../../utils/api-message.js'
 
 function createDebtError(error, fallbackMessage) {
-  const debtError = new Error(getMessage(error?.payload, fallbackMessage))
+  const debtError = new Error(extractApiMessage(error?.payload, fallbackMessage))
   debtError.status = error?.status
   debtError.payload = error?.payload
   return debtError

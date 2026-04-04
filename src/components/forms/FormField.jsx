@@ -9,6 +9,10 @@ function FormField({
   error,
   hint,
   options,
+  inputMode,
+  step,
+  min,
+  max,
 }) {
   const hasOptions = Array.isArray(options) && options.length > 0
 
@@ -46,6 +50,10 @@ function FormField({
           onChange={onChange}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          inputMode={inputMode}
+          step={step}
+          min={min}
+          max={max}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
           className={[

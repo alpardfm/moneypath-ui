@@ -109,6 +109,11 @@ Show the first useful overview after login.
 ## Goal
 Allow user to manage wallets.
 
+## Notes
+- wallet detail page was added to make edit flow and wallet history easier to understand
+- wallet detail now shows related mutation history filtered by `wallet_id`
+- wallet list action was clarified so it points to detail instead of relying on an ambiguous inline edit flow
+
 ## Tasks
 - [x] create wallet list page
 - [x] create add wallet page or modal
@@ -130,6 +135,11 @@ Allow user to manage wallets.
 
 ## Goal
 Allow user to manage debts clearly.
+
+## Notes
+- debt detail now shows related mutation history filtered by `debt_id`
+- money amount inputs in debt flow were tightened to numeric-only input in the UI
+- debt detail is intended to reduce context switching before opening the mutation module
 
 ## Tasks
 - [x] create debt list page
@@ -155,21 +165,27 @@ Allow user to manage debts clearly.
 ## Goal
 Build the main money movement flow.
 
+## Notes
+- happened at on create mutation defaults to the current local date and time, but remains editable
+- money amount inputs in mutation flow were tightened to numeric-only input in the UI
+- optional list query handling was refined so unsupported values like `related_to_debt=undefined` are not sent to the API
+- backend error envelopes with nested `error.message` are surfaced more clearly in the UI
+
 ## Tasks
-- [ ] create mutation list page
-- [ ] create add mutation page
-- [ ] create edit mutation page
-- [ ] connect mutation list API
-- [ ] connect create mutation API
-- [ ] connect mutation detail API
-- [ ] connect update mutation API
-- [ ] add filter UI
-- [ ] add pagination UI
-- [ ] support related_to_debt toggle
-- [ ] support outgoing mutation with existing debt selection
-- [ ] support incoming mutation with existing debt or new debt option
-- [ ] show validation states clearly
-- [ ] optimize mutation form for mobile usage
+- [x] create mutation list page
+- [x] create add mutation page
+- [x] create edit mutation page
+- [x] connect mutation list API
+- [x] connect create mutation API
+- [x] connect mutation detail API
+- [x] connect update mutation API
+- [x] add filter UI
+- [x] add pagination UI
+- [x] support related_to_debt toggle
+- [x] support outgoing mutation with existing debt selection
+- [x] support incoming mutation with existing debt or new debt option
+- [x] show validation states clearly
+- [x] optimize mutation form for mobile usage
 
 ## Output
 - mutation flow works
@@ -181,6 +197,10 @@ Build the main money movement flow.
 
 ## Goal
 Show a simple summary page.
+
+## Notes
+- date range filtering belongs here instead of the MVP dashboard
+- dashboard should stay as a quick overview unless later product direction changes
 
 ## Tasks
 - [ ] create summary page
@@ -223,6 +243,10 @@ Allow user to manage profile data.
 ## Goal
 Make the frontend feel stable and coherent.
 
+## Notes
+- standardize UI copy to full Bahasa Indonesia across the app
+- do not add language switch in MVP unless explicitly requested later
+
 ## Tasks
 - [ ] standardize loading states
 - [ ] standardize error states
@@ -235,6 +259,7 @@ Make the frontend feel stable and coherent.
 - [ ] clean dead code
 - [ ] refactor repeated UI carefully
 - [ ] review UX friction in forms
+- [ ] standardize language usage across labels, buttons, helper text, and page copy
 
 ## Output
 - app feels consistent and ready for real use
@@ -246,6 +271,8 @@ Make the frontend feel stable and coherent.
 ## After MVP
 - [ ] better mutation filtering
 - [ ] richer dashboard presentation
+- [ ] consider optional dashboard date range only after summary flow is stable
+- [ ] consider bilingual support only after full copy consistency is finished
 - [ ] category system
 - [ ] recurring transactions
 - [ ] notifications
