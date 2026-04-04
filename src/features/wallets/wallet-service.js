@@ -1,27 +1,8 @@
 import { api } from '../../services/api.js'
-
-function getMessage(payload, fallbackMessage) {
-  if (!payload) {
-    return fallbackMessage
-  }
-
-  if (typeof payload === 'string') {
-    return payload
-  }
-
-  if (typeof payload.message === 'string') {
-    return payload.message
-  }
-
-  if (typeof payload.error === 'string') {
-    return payload.error
-  }
-
-  return fallbackMessage
-}
+import { extractApiMessage } from '../../utils/api-message.js'
 
 function createWalletError(error, fallbackMessage) {
-  const walletError = new Error(getMessage(error?.payload, fallbackMessage))
+  const walletError = new Error(extractApiMessage(error?.payload, fallbackMessage))
   walletError.status = error?.status
   walletError.payload = error?.payload
   return walletError
@@ -54,6 +35,11 @@ export async function createWallet(input) {
   } catch (error) {
     throw createWalletError(error, 'Gagal membuat wallet.')
   }
+}
+
+export async function getWalletById(walletID) {
+  const payload = await api.get(`/wallets/${walletID}`)
+  return payload?.data || null
 }
 
 export async function updateWallet(walletID, input) {

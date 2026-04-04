@@ -5,23 +5,20 @@ import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
-import DebtForm from '../features/debts/DebtForm.jsx'
-import { getTenorUnitLabel } from '../features/debts/debt-constants.js'
-import { getDebtById, inactivateDebt, updateDebt } from '../features/debts/debt-service.js'
-import { createDebtFormFromItem, getDebtStatusLabel, getDebtStatusTone } from '../features/debts/debt-utils.js'
 import { getMutationLabel, getMutationTone } from '../features/mutations/mutation-utils.js'
 import { listMutations } from '../features/mutations/mutation-service.js'
+import WalletForm from '../features/wallets/WalletForm.jsx'
+import { getWalletById, inactivateWallet, updateWallet } from '../features/wallets/wallet-service.js'
 import { formatAmount } from '../utils/format-number.js'
-import { sanitizeDigits } from '../utils/sanitize-input.js'
 
-function DebtDetailPage() {
-  const { debtId } = useParams()
+function WalletDetailPage() {
+  const { walletId } = useParams()
   const navigate = useNavigate()
-  const [debt, setDebt] = useState(null)
+  const [wallet, setWallet] = useState(null)
+  const [form, setForm] = useState({ name: '' })
+  const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
-  const [form, setForm] = useState(createDebtFormFromItem())
-  const [errors, setErrors] = useState({})
   const [formError, setFormError] = useState('')
   const [formSuccess, setFormSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -30,13 +27,28 @@ function DebtDetailPage() {
   const [isHistoryLoading, setIsHistoryLoading] = useState(true)
   const [historyError, setHistoryError] = useState('')
 
+  const loadWallet = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      setErrorMessage('')
+
+      const result = await getWalletById(walletId)
+      setWallet(result)
+      setForm({ name: result?.name || '' })
+    } catch (error) {
+      setErrorMessage(error.message || 'Gagal memuat detail wallet.')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [walletId])
+
   const loadRelatedMutations = useCallback(async () => {
     try {
       setIsHistoryLoading(true)
       setHistoryError('')
 
       const result = await listMutations({
-        debtId,
+        walletId,
         page: 1,
         pageSize: 10,
         sortBy: 'happened_at',
@@ -45,43 +57,23 @@ function DebtDetailPage() {
 
       setRelatedMutations(result.items)
     } catch (error) {
-      setHistoryError(error.message || 'Gagal memuat riwayat mutasi debt.')
+      setHistoryError(error.message || 'Gagal memuat riwayat mutasi wallet.')
     } finally {
       setIsHistoryLoading(false)
     }
-  }, [debtId])
-
-  const loadDebt = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setErrorMessage('')
-
-      const result = await getDebtById(debtId)
-      setDebt(result)
-      setForm(createDebtFormFromItem(result))
-    } catch (error) {
-      setErrorMessage(error.message || 'Gagal memuat detail debt.')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [debtId])
+  }, [walletId])
 
   useEffect(() => {
-    loadDebt()
-  }, [loadDebt])
-
-  useEffect(() => {
+    loadWallet()
     loadRelatedMutations()
-  }, [loadRelatedMutations])
+  }, [loadRelatedMutations, loadWallet])
 
   const handleChange = (event) => {
     const { name, value } = event.target
-    const numberOnlyFields = ['principalAmount', 'paymentAmount']
-    const nextValue = numberOnlyFields.includes(name) ? sanitizeDigits(value) : value
 
     setForm((currentForm) => ({
       ...currentForm,
-      [name]: nextValue,
+      [name]: value,
     }))
 
     setErrors((currentErrors) => ({
@@ -94,7 +86,7 @@ function DebtDetailPage() {
     const nextErrors = {}
 
     if (!form.name.trim()) {
-      nextErrors.name = 'Nama debt wajib diisi.'
+      nextErrors.name = 'Nama wallet wajib diisi.'
     }
 
     return nextErrors
@@ -104,7 +96,6 @@ function DebtDetailPage() {
     event.preventDefault()
 
     const nextErrors = validateForm()
-
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors)
       return
@@ -115,10 +106,10 @@ function DebtDetailPage() {
       setFormError('')
       setFormSuccess('')
 
-      const updatedDebt = await updateDebt(debtId, form)
-      setDebt(updatedDebt)
-      setForm(createDebtFormFromItem(updatedDebt))
-      setFormSuccess('Debt berhasil diperbarui.')
+      const updatedWallet = await updateWallet(walletId, form)
+      setWallet(updatedWallet)
+      setForm({ name: updatedWallet?.name || '' })
+      setFormSuccess('Nama wallet berhasil diperbarui.')
     } catch (error) {
       setFormError(error.message)
     } finally {
@@ -127,7 +118,7 @@ function DebtDetailPage() {
   }
 
   const handleReset = () => {
-    setForm(createDebtFormFromItem(debt))
+    setForm({ name: wallet?.name || '' })
     setErrors({})
     setFormError('')
   }
@@ -138,11 +129,11 @@ function DebtDetailPage() {
       setFormError('')
       setFormSuccess('')
 
-      await inactivateDebt(debtId)
-      navigate('/app/debts', {
+      await inactivateWallet(walletId)
+      navigate('/app/wallets', {
         replace: true,
         state: {
-          message: `Debt ${debt.name} berhasil dinonaktifkan.`,
+          message: `Wallet ${wallet.name} berhasil dinonaktifkan.`,
         },
       })
     } catch (error) {
@@ -156,38 +147,38 @@ function DebtDetailPage() {
     return (
       <PageContainer>
         <LoadingState
-          title="Memuat detail debt"
-          message="Detail debt dan metadata-nya sedang diambil dari server."
+          title="Memuat detail wallet"
+          message="Detail wallet sedang diambil dari server."
         />
       </PageContainer>
     )
   }
 
-  if (errorMessage || !debt) {
+  if (errorMessage || !wallet) {
     return (
       <PageContainer className="space-y-6">
-        <Link to="/app/debts" className="inline-flex text-sm font-medium text-slate-600 underline">
-          Kembali ke daftar debt
+        <Link to="/app/wallets" className="inline-flex text-sm font-medium text-slate-600 underline">
+          Kembali ke daftar wallet
         </Link>
         <ErrorState
-          title="Detail debt belum bisa dimuat"
-          message={errorMessage || 'Debt tidak ditemukan.'}
+          title="Detail wallet belum bisa dimuat"
+          message={errorMessage || 'Wallet tidak ditemukan.'}
           actionLabel="Coba lagi"
-          onAction={loadDebt}
+          onAction={loadWallet}
         />
       </PageContainer>
     )
   }
 
-  const canInactivate = Number(debt.remaining_amount || 0) === 0
+  const hasBalance = Number(wallet.balance || 0) !== 0
 
   return (
     <PageContainer className="space-y-6">
-      <Link to="/app/debts" className="inline-flex text-sm font-medium text-slate-600 underline">
-        Kembali ke daftar debt
+      <Link to="/app/wallets" className="inline-flex text-sm font-medium text-slate-600 underline">
+        Kembali ke daftar wallet
       </Link>
 
-      {formError ? <ErrorState title="Aksi debt gagal" message={formError} /> : null}
+      {formError ? <ErrorState title="Aksi wallet gagal" message={formError} /> : null}
 
       {formSuccess ? (
         <SectionCard tone="subtle" className="border-emerald-200 bg-emerald-50">
@@ -199,83 +190,50 @@ function DebtDetailPage() {
         <SectionCard className="space-y-5">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{debt.name}</h1>
-              <span
-                className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${getDebtStatusTone(debt.status)}`}
-              >
-                {getDebtStatusLabel(debt.status)}
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{wallet.name}</h1>
+              <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
+                Active
               </span>
             </div>
             <p className="text-sm leading-6 text-slate-600">
-              Detail debt membantu kamu memeriksa nilai pokok, sisa hutang, dan metadata pendukung
-              sebelum mengubah data.
+              Detail wallet membantu kamu melihat saldo terkini dan riwayat mutasi tanpa pindah ke
+              halaman mutation.
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Pokok</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">
-                {formatAmount(debt.principal_amount)}
-              </p>
-            </div>
-            <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Sisa</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">
-                {formatAmount(debt.remaining_amount)}
-              </p>
-            </div>
-            <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Tenor</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">
-                {debt.tenor_value && debt.tenor_unit
-                  ? `${debt.tenor_value} ${getTenorUnitLabel(debt.tenor_unit)}`
-                  : 'Belum diatur'}
-              </p>
-            </div>
-            <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Cicilan</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">
-                {debt.payment_amount ? formatAmount(debt.payment_amount) : 'Belum diatur'}
-              </p>
-            </div>
+          <div className="rounded-2xl bg-slate-50 px-4 py-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Balance</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-900">{formatAmount(wallet.balance)}</p>
           </div>
-
-          <SectionCard tone="subtle">
-            <p className="text-sm font-medium text-slate-700">Catatan</p>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              {debt.note || 'Belum ada catatan tambahan untuk debt ini.'}
-            </p>
-          </SectionCard>
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
               onClick={handleInactivate}
-              disabled={!canInactivate || isInactivating}
+              disabled={hasBalance || isInactivating}
               className="w-full rounded-xl border border-rose-200 px-4 py-3 text-sm font-medium text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 sm:w-auto"
             >
-              {isInactivating ? 'Memproses...' : 'Nonaktifkan debt'}
+              {isInactivating ? 'Memproses...' : 'Nonaktifkan wallet'}
             </button>
             <span className="inline-flex items-center rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-500">
-              {canInactivate
-                ? 'Debt ini bisa dinonaktifkan karena sisa hutangnya nol.'
-                : 'Debt hanya bisa dinonaktifkan saat remaining amount sudah nol.'}
+              {hasBalance
+                ? 'Wallet ini belum bisa dinonaktifkan karena balance belum nol.'
+                : 'Wallet ini bisa dinonaktifkan bila memang tidak ingin dipakai lagi.'}
             </span>
           </div>
 
           <SectionCard tone="subtle" className="space-y-4">
             <div className="space-y-1">
-              <p className="text-sm font-medium text-slate-700">Riwayat mutasi terkait</p>
+              <p className="text-sm font-medium text-slate-700">Riwayat mutasi wallet</p>
               <p className="text-sm leading-6 text-slate-500">
-                Riwayat ini menampilkan mutasi masuk maupun keluar yang terhubung ke debt ini.
+                Menampilkan mutasi masuk dan keluar yang memakai wallet ini.
               </p>
             </div>
 
             {isHistoryLoading ? (
               <LoadingState
                 title="Memuat riwayat mutasi"
-                message="Mutasi terkait debt ini sedang diambil dari server."
+                message="Mutasi wallet ini sedang diambil dari server."
               />
             ) : historyError ? (
               <ErrorState
@@ -286,8 +244,8 @@ function DebtDetailPage() {
               />
             ) : relatedMutations.length === 0 ? (
               <EmptyState
-                title="Belum ada mutasi terkait"
-                message="Saat ada mutasi masuk atau keluar yang terhubung ke debt ini, riwayatnya akan muncul di sini."
+                title="Belum ada mutasi"
+                message="Saat wallet ini dipakai di mutasi masuk atau keluar, riwayatnya akan tampil di sini."
               />
             ) : (
               <div className="space-y-3">
@@ -304,16 +262,16 @@ function DebtDetailPage() {
                           >
                             {getMutationLabel(mutation.type)}
                           </span>
-                          <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-700">
-                            Debt linked
-                          </span>
+                          {mutation.related_to_debt ? (
+                            <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-700">
+                              Debt linked
+                            </span>
+                          ) : null}
                         </div>
                         <p className="mt-3 text-lg font-semibold text-slate-900">
                           {formatAmount(mutation.amount)}
                         </p>
-                        <p className="mt-1 text-sm text-slate-600">
-                          {mutation.description}
-                        </p>
+                        <p className="mt-1 text-sm text-slate-600">{mutation.description}</p>
                         <p className="mt-1 text-sm text-slate-500">
                           {new Date(mutation.happened_at).toLocaleString('id-ID')}
                         </p>
@@ -333,7 +291,7 @@ function DebtDetailPage() {
           </SectionCard>
         </SectionCard>
 
-        <DebtForm
+        <WalletForm
           mode="edit"
           form={form}
           errors={errors}
@@ -347,4 +305,4 @@ function DebtDetailPage() {
   )
 }
 
-export default DebtDetailPage
+export default WalletDetailPage
