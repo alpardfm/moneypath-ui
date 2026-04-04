@@ -4,7 +4,7 @@ import PageContainer from '../../components/layout/PageContainer.jsx'
 
 const navigationItems = [
   { label: 'Dashboard', shortLabel: 'Home', to: '/app/dashboard', enabled: true },
-  { label: 'Wallets', shortLabel: 'Wallet', enabled: false },
+  { label: 'Wallets', shortLabel: 'Wallet', to: '/app/wallets', enabled: true },
   { label: 'Debts', shortLabel: 'Debt', enabled: false },
   { label: 'Mutations', shortLabel: 'Flow', enabled: false },
 ]

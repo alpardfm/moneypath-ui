@@ -110,16 +110,16 @@ Show the first useful overview after login.
 Allow user to manage wallets.
 
 ## Tasks
-- [ ] create wallet list page
-- [ ] create add wallet page or modal
-- [ ] create edit wallet page or modal
-- [ ] connect wallet list API
-- [ ] connect create wallet API
-- [ ] connect update wallet API
-- [ ] connect inactivate wallet API
-- [ ] show active wallet states clearly
-- [ ] handle empty wallet state
-- [ ] handle validation and API errors
+- [x] create wallet list page
+- [x] create add wallet page or modal
+- [x] create edit wallet page or modal
+- [x] connect wallet list API
+- [x] connect create wallet API
+- [x] connect update wallet API
+- [x] connect inactivate wallet API
+- [x] show active wallet states clearly
+- [x] handle empty wallet state
+- [x] handle validation and API errors
 
 ## Output
 - wallet flow works end-to-end
