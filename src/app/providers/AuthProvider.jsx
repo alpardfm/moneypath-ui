@@ -9,14 +9,16 @@ import { AuthContext } from './auth-context.jsx'
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => getAuthToken())
+  const [authReady, setAuthReady] = useState(false)
 
   useEffect(() => {
     if (token) {
       setAuthToken(token)
-      return
+    } else {
+      clearAuthToken()
     }
 
-    clearAuthToken()
+    setAuthReady(true)
   }, [token])
 
   useEffect(() => {
@@ -35,12 +37,13 @@ export function AuthProvider({ children }) {
 
   const value = useMemo(
     () => ({
+      authReady,
       isAuthenticated: Boolean(token),
       token,
       login: setToken,
       logout: () => setToken(''),
     }),
-    [token],
+    [authReady, token],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
