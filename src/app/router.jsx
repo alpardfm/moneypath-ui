@@ -1,0 +1,44 @@
+import { Navigate, createBrowserRouter } from 'react-router-dom'
+import AppShell from './layout/AppShell.jsx'
+import ProtectedRoute from '../features/auth/ProtectedRoute.jsx'
+import DashboardPage from '../pages/DashboardPage.jsx'
+import LoginPage from '../pages/LoginPage.jsx'
+import NotFoundPage from '../pages/NotFoundPage.jsx'
+import RegisterPage from '../pages/RegisterPage.jsx'
+
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Navigate to="/app/dashboard" replace />,
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/register',
+    element: <RegisterPage />,
+  },
+  {
+    path: '/app',
+    element: (
+      <ProtectedRoute>
+        <AppShell />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/app/dashboard" replace />,
+      },
+      {
+        path: 'dashboard',
+        element: <DashboardPage />,
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <NotFoundPage />,
+  },
+])
