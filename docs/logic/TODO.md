@@ -225,13 +225,13 @@ Show a simple summary page.
 Allow user to manage profile data.
 
 ## Tasks
-- [ ] create profile page
-- [ ] connect get me API
-- [ ] connect update profile API
-- [ ] connect change password API
-- [ ] create password change form
-- [ ] show success and error feedback
-- [ ] keep form UX simple and clear
+- [x] create profile page
+- [x] connect get me API
+- [x] connect update profile API
+- [x] connect change password API
+- [x] create password change form
+- [x] show success and error feedback
+- [x] keep form UX simple and clear
 
 ## Output
 - profile flow works

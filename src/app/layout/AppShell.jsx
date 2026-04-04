@@ -3,11 +3,12 @@ import { useAuth } from '../providers/useAuth.jsx'
 import PageContainer from '../../components/layout/PageContainer.jsx'
 
 const navigationItems = [
-  { label: 'Dashboard', shortLabel: 'Home', to: '/app/dashboard', enabled: true },
-  { label: 'Wallets', shortLabel: 'Wallet', to: '/app/wallets', enabled: true },
-  { label: 'Debts', shortLabel: 'Debt', to: '/app/debts', enabled: true },
-  { label: 'Mutations', shortLabel: 'Flow', to: '/app/mutations', enabled: true },
+  { label: 'Dashboard', shortLabel: 'Beranda', to: '/app/dashboard', enabled: true },
+  { label: 'Wallet', shortLabel: 'Wallet', to: '/app/wallets', enabled: true },
+  { label: 'Debt', shortLabel: 'Debt', to: '/app/debts', enabled: true },
+  { label: 'Mutasi', shortLabel: 'Mutasi', to: '/app/mutations', enabled: true },
   { label: 'Ringkasan', shortLabel: 'Ringkas', to: '/app/summary', enabled: true },
+  { label: 'Profil', shortLabel: 'Profil', to: '/app/profile', enabled: true },
 ]
 
 function AppShell() {
@@ -25,20 +26,20 @@ function AppShell() {
                 Moneypath
               </Link>
               <p className="mt-1 max-w-xl text-sm leading-6 text-slate-500">
-                Clear, practical finance tracking for daily personal use.
+                Pencatatan keuangan pribadi yang jelas dan praktis untuk dipakai setiap hari.
               </p>
             </div>
 
             <div className="flex items-center gap-3">
               <div className="hidden rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700 sm:block">
-                Auth ready
+                Sesi aktif
               </div>
               <button
                 type="button"
                 onClick={logout}
                 className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
               >
-                Logout
+                Keluar
               </button>
             </div>
           </div>
@@ -79,7 +80,7 @@ function AppShell() {
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur md:hidden">
         <PageContainer className="px-0" size="app">
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-6 gap-2">
             {navigationItems.map((item) =>
               item.enabled ? (
                 <NavLink
