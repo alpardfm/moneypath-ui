@@ -10,3 +10,5 @@ Dokumen di folder ini fokus ke hal yang sudah benar-benar ada di codebase, supay
   Ringkasan setup awal frontend: stack, struktur folder, routing, auth foundation, API foundation, dan cara menjalankan project.
 - `phase-1-layout.md`  
   Ringkasan layout system awal: app shell, responsive header, mobile navigation, shared card pattern, dan spacing rules.
+- `phase-2-auth.md`  
+  Ringkasan auth flow awal: login/register UI, token storage, protected route, logout, dan auth response assumptions.

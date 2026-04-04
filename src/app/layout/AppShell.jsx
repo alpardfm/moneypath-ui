@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
+import { useAuth } from '../providers/useAuth.jsx'
 import PageContainer from '../../components/layout/PageContainer.jsx'
 
 const navigationItems = [
@@ -9,6 +10,8 @@ const navigationItems = [
 ]
 
 function AppShell() {
+  const { logout } = useAuth()
+
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
       <div className="pointer-events-none fixed inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_top,_rgba(14,116,144,0.14),_transparent_56%)]" />
@@ -25,8 +28,17 @@ function AppShell() {
               </p>
             </div>
 
-            <div className="hidden rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700 sm:block">
-              Phase 1 layout
+            <div className="flex items-center gap-3">
+              <div className="hidden rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700 sm:block">
+                Auth ready
+              </div>
+              <button
+                type="button"
+                onClick={logout}
+                className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+              >
+                Logout
+              </button>
             </div>
           </div>
 

@@ -4,7 +4,7 @@ import PageContainer from '../components/layout/PageContainer.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 
 function DashboardPage() {
-  const { logout } = useAuth()
+  const { token } = useAuth()
 
   return (
     <PageContainer className="space-y-6">
@@ -32,23 +32,16 @@ function DashboardPage() {
             spacing, and token-based access before building the real dashboard in Phase 3.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={logout}
-              className="rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
-              Logout
-            </button>
             <span className="inline-flex items-center rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-500">
-              Desktop and mobile spacing tuned
+              Auth token tersimpan: {token ? 'ya' : 'tidak'}
             </span>
           </div>
         </SectionCard>
 
         <section>
           <EmptyState
-            title="No dashboard data yet"
-            message="Real metrics, balances, and API integration will be added when the dashboard phase starts."
+            title="Dashboard data belum dihubungkan"
+            message="Auth flow sudah berjalan, tapi dashboard API dan metrik finansial tetap ditunda ke Phase 3."
           />
         </section>
       </div>

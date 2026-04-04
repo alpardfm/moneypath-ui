@@ -67,16 +67,16 @@ Create the main layout system for desktop and mobile.
 Allow user to register, login, and enter protected pages.
 
 ## Tasks
-- [ ] create register page
-- [ ] create login page
-- [ ] connect register API
-- [ ] connect login API
-- [ ] store auth token
-- [ ] implement protected routes
-- [ ] implement logout flow
-- [ ] handle invalid auth states
-- [ ] handle auth error messages
-- [ ] redirect user correctly after auth
+- [x] create register page
+- [x] create login page
+- [x] connect register API
+- [x] connect login API
+- [x] store auth token
+- [x] implement protected routes
+- [x] implement logout flow
+- [x] handle invalid auth states
+- [x] handle auth error messages
+- [x] redirect user correctly after auth
 
 ## Output
 - auth flow works end-to-end
