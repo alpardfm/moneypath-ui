@@ -10,6 +10,7 @@ import MutationEditPage from '../pages/MutationEditPage.jsx'
 import MutationPage from '../pages/MutationPage.jsx'
 import NotFoundPage from '../pages/NotFoundPage.jsx'
 import RegisterPage from '../pages/RegisterPage.jsx'
+import SummaryPage from '../pages/SummaryPage.jsx'
 import WalletDetailPage from '../pages/WalletDetailPage.jsx'
 import WalletPage from '../pages/WalletPage.jsx'
 
@@ -69,6 +70,10 @@ export const router = createBrowserRouter([
       {
         path: 'mutations',
         element: <MutationPage />,
+      },
+      {
+        path: 'summary',
+        element: <SummaryPage />,
       },
       {
         path: 'mutations/:mutationId',

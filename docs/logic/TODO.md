@@ -203,16 +203,16 @@ Show a simple summary page.
 - dashboard should stay as a quick overview unless later product direction changes
 
 ## Tasks
-- [ ] create summary page
-- [ ] connect summary API
-- [ ] add date range input
-- [ ] display total assets
-- [ ] display total debts
-- [ ] display incoming
-- [ ] display outgoing
-- [ ] display net flow
-- [ ] handle loading / empty / error states
-- [ ] ensure summary is readable on mobile
+- [x] create summary page
+- [x] connect summary API
+- [x] add date range input
+- [x] display total assets
+- [x] display total debts
+- [x] display incoming
+- [x] display outgoing
+- [x] display net flow
+- [x] handle loading / empty / error states
+- [x] ensure summary is readable on mobile
 
 ## Output
 - summary page works
