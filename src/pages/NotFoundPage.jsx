@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import PageContainer from '../components/layout/PageContainer.jsx'
+import SectionCard from '../components/layout/SectionCard.jsx'
 
 function NotFoundPage() {
   return (
-    <PageContainer className="flex min-h-screen items-center justify-center py-8">
-      <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+    <PageContainer className="flex min-h-screen items-center justify-center py-8 sm:py-10" size="narrow">
+      <SectionCard className="w-full text-center sm:p-8">
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">404</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">Page not found</h1>
         <p className="mt-3 text-sm leading-6 text-slate-600">
@@ -16,7 +17,7 @@ function NotFoundPage() {
         >
           Go to login
         </Link>
-      </div>
+      </SectionCard>
     </PageContainer>
   )
 }
