@@ -89,15 +89,15 @@ Allow user to register, login, and enter protected pages.
 Show the first useful overview after login.
 
 ## Tasks
-- [ ] create dashboard page
-- [ ] fetch dashboard API
-- [ ] display total assets
-- [ ] display total debts
-- [ ] display total incoming
-- [ ] display total outgoing
-- [ ] display wallet balances
-- [ ] add loading / empty / error states
-- [ ] optimize layout for mobile readability
+- [x] create dashboard page
+- [x] fetch dashboard API
+- [x] display total assets
+- [x] display total debts
+- [x] display total incoming
+- [x] display total outgoing
+- [x] display wallet balances
+- [x] add loading / empty / error states
+- [x] optimize layout for mobile readability
 
 ## Output
 - dashboard is usable and readable
