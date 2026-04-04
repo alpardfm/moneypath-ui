@@ -1,9 +1,16 @@
-function EmptyState({ title, message }) {
+import SectionCard from '../layout/SectionCard.jsx'
+
+function EmptyState({ title, message, className = '' }) {
   return (
-    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center shadow-sm">
-      <p className="text-base font-medium text-slate-900">{title}</p>
-      <p className="mt-2 text-sm text-slate-500">{message}</p>
-    </div>
+    <SectionCard
+      className={['border-dashed text-center', className].filter(Boolean).join(' ')}
+      tone="subtle"
+    >
+      <div className="mx-auto max-w-md">
+        <p className="text-base font-medium text-slate-900">{title}</p>
+        <p className="mt-2 text-sm leading-6 text-slate-500">{message}</p>
+      </div>
+    </SectionCard>
   )
 }
 

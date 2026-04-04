@@ -44,16 +44,16 @@ Prepare a clean frontend foundation.
 Create the main layout system for desktop and mobile.
 
 ## Tasks
-- [ ] create app shell
-- [ ] create responsive header
-- [ ] create mobile-friendly navigation
-- [ ] create page container component
-- [ ] create section/card component
-- [ ] create loading state component
-- [ ] create empty state component
-- [ ] create error state component
-- [ ] define spacing and content width rules
-- [ ] verify layout on desktop and mobile widths
+- [x] create app shell
+- [x] create responsive header
+- [x] create mobile-friendly navigation
+- [x] create page container component
+- [x] create section/card component
+- [x] create loading state component
+- [x] create empty state component
+- [x] create error state component
+- [x] define spacing and content width rules
+- [x] verify layout on desktop and mobile widths
 
 ## Output
 - consistent layout foundation

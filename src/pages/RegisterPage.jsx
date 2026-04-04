@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
 import EmptyState from '../components/feedback/EmptyState.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
+import SectionCard from '../components/layout/SectionCard.jsx'
 
 function RegisterPage() {
   return (
-    <PageContainer className="flex min-h-screen items-center py-8">
-      <div className="w-full space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
+    <PageContainer className="flex min-h-screen items-center py-8 sm:py-10" size="narrow">
+      <SectionCard className="w-full space-y-6">
         <div className="space-y-3">
           <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-sm font-medium text-sky-700">
             Deferred by plan
@@ -29,7 +30,7 @@ function RegisterPage() {
           </Link>
           .
         </p>
-      </div>
+      </SectionCard>
     </PageContainer>
   )
 }

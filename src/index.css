@@ -27,11 +27,14 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background:
+    radial-gradient(circle at top, rgba(14, 116, 144, 0.08), transparent 28rem),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 #root {
   min-height: 100vh;
+  overflow-x: clip;
 }
 
 a {
@@ -52,4 +55,10 @@ button {
 
 button:disabled {
   cursor: not-allowed;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
 }

@@ -1,14 +1,20 @@
-function LoadingState({ title = 'Loading', message = 'Please wait while we prepare this page.' }) {
+import SectionCard from '../layout/SectionCard.jsx'
+
+function LoadingState({
+  title = 'Loading',
+  message = 'Please wait while we prepare this page.',
+  className = '',
+}) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="flex items-center gap-3">
-        <span className="inline-flex h-3 w-3 animate-pulse rounded-full bg-emerald-500" />
+    <SectionCard className={className}>
+      <div className="flex items-start gap-3 sm:items-center">
+        <span className="mt-1 inline-flex h-3 w-3 shrink-0 animate-pulse rounded-full bg-emerald-500 sm:mt-0" />
         <div>
           <p className="font-medium text-slate-900">{title}</p>
-          <p className="text-sm text-slate-500">{message}</p>
+          <p className="mt-1 text-sm leading-6 text-slate-500">{message}</p>
         </div>
       </div>
-    </div>
+    </SectionCard>
   )
 }
 
