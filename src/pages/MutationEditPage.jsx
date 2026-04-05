@@ -229,12 +229,12 @@ function MutationEditPage() {
           onClick={() =>
             navigate('/app/mutations', {
               replace: true,
-              state: { message: 'Delete mutation memang tidak tersedia di UI sesuai aturan produk.' },
+              state: { message: 'Hapus mutasi memang tidak tersedia di UI sesuai aturan produk.' },
             })
           }
           className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-500"
         >
-          Delete tidak tersedia
+          Hapus tidak tersedia
         </button>
       </div>
 
@@ -255,7 +255,7 @@ function MutationEditPage() {
               </span>
               {mutation.related_to_debt ? (
                 <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-sm font-medium text-sky-700">
-                  Debt linked
+                  Terkait debt
                 </span>
               ) : null}
             </div>
@@ -267,19 +267,27 @@ function MutationEditPage() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Wallet ID</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">ID wallet</p>
               <p className="mt-2 text-sm font-semibold text-slate-900">{mutation.wallet_id}</p>
             </div>
             <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Debt ID</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">ID debt</p>
               <p className="mt-2 text-sm font-semibold text-slate-900">{mutation.debt_id || '-'}</p>
             </div>
             <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Debt action</p>
-              <p className="mt-2 text-sm font-semibold text-slate-900">{mutation.debt_action || 'none'}</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Aksi debt</p>
+              <p className="mt-2 text-sm font-semibold text-slate-900">
+                {mutation.debt_action === 'borrow_new'
+                  ? 'Buat debt baru'
+                  : mutation.debt_action === 'borrow_existing'
+                    ? 'Pakai debt yang ada'
+                    : mutation.debt_action === 'pay'
+                      ? 'Bayar debt'
+                      : '-'}
+              </p>
             </div>
             <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Happened at</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Tanggal kejadian</p>
               <p className="mt-2 text-sm font-semibold text-slate-900">
                 {new Date(mutation.happened_at).toLocaleString('id-ID')}
               </p>

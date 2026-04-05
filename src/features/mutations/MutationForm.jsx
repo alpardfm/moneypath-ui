@@ -24,13 +24,13 @@ function MutationForm({
     <SectionCard className="space-y-5">
       <div className="space-y-2">
         <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
-          {isEditMode ? 'Edit mutation' : 'Mutation baru'}
+          {isEditMode ? 'Ubah mutasi' : 'Mutasi baru'}
         </span>
         <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
           {isEditMode ? 'Perbarui mutasi.' : 'Catat mutasi baru.'}
         </h2>
         <p className="text-sm leading-6 text-slate-600">
-          Semua perubahan saldo harus lewat mutasi. UI ini tidak menyediakan delete mutation.
+          Semua perubahan saldo harus lewat mutasi. UI ini tidak menyediakan hapus mutasi.
         </p>
       </div>
 
@@ -159,7 +159,7 @@ function MutationForm({
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 id="newDebtTenorValue"
-                label="Tenor value"
+            label="Nilai tenor"
                 type="number"
                 value={form.newDebtTenorValue}
                 onChange={onChange}
@@ -167,7 +167,7 @@ function MutationForm({
               />
               <FormField
                 id="newDebtTenorUnit"
-                label="Tenor unit"
+                label="Satuan tenor"
                 value={form.newDebtTenorUnit}
                 onChange={onChange}
                 options={tenorUnitOptions}
@@ -215,7 +215,7 @@ function MutationForm({
               onClick={onCancel}
               className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:w-auto"
             >
-              Reset form
+              Atur ulang form
             </button>
           ) : null}
         </div>

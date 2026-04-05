@@ -86,27 +86,19 @@ function SummaryPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <p className="text-sm font-medium text-slate-500">Ringkasan</p>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Ringkasan periode yang lebih fokus.
+          Ringkasan periode.
         </h1>
-        <p className="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-          Halaman ini dipakai untuk melihat total aset, total utang, arus masuk, arus keluar, dan
-          net flow berdasarkan rentang tanggal yang kamu pilih.
-        </p>
       </div>
 
       <SectionCard className="space-y-4">
-        <div className="space-y-2">
+        <div className="space-y-1">
           <p className="text-sm font-medium text-slate-500">Filter tanggal</p>
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
             Pilih periode ringkasan
           </h2>
-          <p className="text-sm leading-6 text-slate-600">
-            Default-nya memakai bulan berjalan, tapi kamu bisa ganti tanggal mulai dan selesai
-            kapan saja.
-          </p>
         </div>
 
         <form className="grid gap-4 lg:grid-cols-[1fr_1fr_auto_auto]" onSubmit={handleSubmit}>
@@ -188,7 +180,7 @@ function SummaryPage() {
             <SectionCard className="space-y-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">Net flow</p>
+                  <p className="text-sm font-medium text-slate-500">Arus bersih</p>
                   <h2 className="mt-1 text-3xl font-semibold tracking-tight text-slate-900">
                     {formatAmount(summary.net_flow)}
                   </h2>

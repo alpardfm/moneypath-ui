@@ -188,21 +188,17 @@ function WalletDetailPage() {
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <SectionCard className="space-y-5">
-          <div className="space-y-2">
+          <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{wallet.name}</h1>
               <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
-                Active
+                Aktif
               </span>
             </div>
-            <p className="text-sm leading-6 text-slate-600">
-              Detail wallet membantu kamu melihat saldo terkini dan riwayat mutasi tanpa pindah ke
-              halaman mutation.
-            </p>
           </div>
 
           <div className="rounded-2xl bg-slate-50 px-4 py-4">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Balance</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Saldo</p>
             <p className="mt-2 text-2xl font-semibold text-slate-900">{formatAmount(wallet.balance)}</p>
           </div>
 
@@ -215,19 +211,16 @@ function WalletDetailPage() {
             >
               {isInactivating ? 'Memproses...' : 'Nonaktifkan wallet'}
             </button>
-            <span className="inline-flex items-center rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-500">
-              {hasBalance
-                ? 'Wallet ini belum bisa dinonaktifkan karena balance belum nol.'
-                : 'Wallet ini bisa dinonaktifkan bila memang tidak ingin dipakai lagi.'}
-            </span>
+            {!hasBalance ? null : (
+              <span className="inline-flex items-center rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-500">
+                Saldo harus nol.
+              </span>
+            )}
           </div>
 
           <SectionCard tone="subtle" className="space-y-4">
-            <div className="space-y-1">
+            <div>
               <p className="text-sm font-medium text-slate-700">Riwayat mutasi wallet</p>
-              <p className="text-sm leading-6 text-slate-500">
-                Menampilkan mutasi masuk dan keluar yang memakai wallet ini.
-              </p>
             </div>
 
             {isHistoryLoading ? (
@@ -264,7 +257,7 @@ function WalletDetailPage() {
                           </span>
                           {mutation.related_to_debt ? (
                             <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-700">
-                              Debt linked
+                              Terkait debt
                             </span>
                           ) : null}
                         </div>

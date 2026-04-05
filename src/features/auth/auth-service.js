@@ -53,7 +53,7 @@ export async function loginUser(formData) {
     const token = extractToken(payload)
 
     if (!token) {
-      throw createAuthError({ payload }, 'Login succeeded but no auth token was returned.')
+      throw createAuthError({ payload }, 'Login berhasil, tetapi token tidak ditemukan.')
     }
 
     return {
@@ -61,7 +61,7 @@ export async function loginUser(formData) {
       token,
     }
   } catch (error) {
-    throw createAuthError(error, 'Unable to login with the provided credentials.')
+    throw createAuthError(error, 'Tidak bisa masuk dengan kredensial yang diberikan.')
   }
 }
 
@@ -77,9 +77,9 @@ export async function registerUser(formData) {
     return {
       payload,
       token: extractToken(payload),
-      message: extractMessage(payload, 'Account created successfully.'),
+      message: extractMessage(payload, 'Akun berhasil dibuat.'),
     }
   } catch (error) {
-    throw createAuthError(error, 'Unable to create your account right now.')
+    throw createAuthError(error, 'Akun belum bisa dibuat saat ini.')
   }
 }

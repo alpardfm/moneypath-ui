@@ -237,15 +237,11 @@ function MutationPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-3">
-        <p className="text-sm font-medium text-slate-500">Mutations</p>
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-slate-500">Mutasi</p>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Catat arus uang dengan aturan yang aman.
+          Mutasi uang.
         </h1>
-        <p className="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-          Mutasi adalah sumber utama perubahan saldo. Di phase ini kamu bisa melihat daftar mutasi,
-          membuat mutasi baru, memfilter riwayat, dan membuka halaman edit mutasi.
-        </p>
       </div>
 
       {formError ? <ErrorState title="Aksi mutasi gagal" message={formError} /> : null}
@@ -257,8 +253,8 @@ function MutationPage() {
       ) : null}
 
       <SectionCard className="space-y-4">
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-500">Filter & pagination</p>
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-slate-500">Filter dan navigasi halaman</p>
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
             Saring riwayat mutasi
           </h2>
@@ -309,7 +305,7 @@ function MutationPage() {
           ) : (
             <>
               <SectionCard className="space-y-3">
-                <p className="text-sm font-medium text-slate-500">Mutation history</p>
+                <p className="text-sm font-medium text-slate-500">Riwayat mutasi</p>
                 <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
                   {meta?.total_items || mutations.length} mutasi ditemukan
                 </h2>
@@ -320,10 +316,10 @@ function MutationPage() {
                     onClick={() => handlePageChange((filters.page || 1) - 1)}
                     className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400"
                   >
-                    Prev
+                    Sebelumnya
                   </button>
                   <span className="text-sm text-slate-500">
-                    Page {filters.page}
+                    Halaman {filters.page}
                   </span>
                   <button
                     type="button"
@@ -331,7 +327,7 @@ function MutationPage() {
                     onClick={() => handlePageChange(filters.page + 1)}
                     className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400"
                   >
-                    Next
+                    Berikutnya
                   </button>
                 </div>
               </SectionCard>
@@ -347,7 +343,7 @@ function MutationPage() {
                           </span>
                           {mutation.related_to_debt ? (
                             <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-700">
-                              Debt linked
+                              Terkait debt
                             </span>
                           ) : null}
                         </div>
@@ -367,11 +363,6 @@ function MutationPage() {
                         Edit
                       </Link>
                     </div>
-
-                    <p className="text-sm leading-6 text-slate-600">
-                      Wallet ID: {mutation.wallet_id}
-                      {mutation.debt_id ? ` | Debt ID: ${mutation.debt_id}` : ''}
-                    </p>
                   </SectionCard>
                 ))}
               </div>

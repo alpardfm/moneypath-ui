@@ -10,8 +10,8 @@ function ProtectedRoute({ children }) {
     return (
       <div className="p-4 sm:p-6">
         <LoadingState
-          title="Checking your session"
-          message="Please wait while we verify access to the app."
+          title="Memeriksa sesi"
+          message="Tunggu sebentar, akses ke aplikasi sedang diverifikasi."
         />
       </div>
     )
@@ -24,7 +24,7 @@ function ProtectedRoute({ children }) {
         replace
         state={{
           from: `${location.pathname}${location.search}`,
-          message: 'Your session has ended. Please login again.',
+          message: 'Sesi kamu sudah berakhir. Silakan masuk lagi.',
         }}
       />
     )

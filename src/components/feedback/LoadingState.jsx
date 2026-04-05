@@ -1,8 +1,8 @@
 import SectionCard from '../layout/SectionCard.jsx'
 
 function LoadingState({
-  title = 'Loading',
-  message = 'Please wait while we prepare this page.',
+  title = 'Memuat',
+  message = 'Tunggu sebentar, halaman sedang disiapkan.',
   className = '',
 }) {
   return (

@@ -192,30 +192,18 @@ function ProfilePage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <p className="text-sm font-medium text-slate-500">Profil</p>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Kelola data akun dengan sederhana.
+          Profil akun.
         </h1>
-        <p className="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-          Halaman ini dipakai untuk memperbarui nama, email, username, dan password tanpa
-          menambahkan pengaturan yang tidak perlu di MVP.
-        </p>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <SectionCard className="space-y-5">
-          <div className="space-y-2">
-            <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
-              Profil akun
-            </span>
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-              Perbarui data utama
-            </h2>
-            <p className="text-sm leading-6 text-slate-600">
-              Data ini dipakai sebagai identitas akun kamu saat menggunakan aplikasi.
-            </p>
-          </div>
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Data akun
+          </h2>
 
           {profileError ? <ErrorState title="Perubahan profil gagal" message={profileError} /> : null}
           {profileSuccess ? (
@@ -261,24 +249,16 @@ function ProfilePage() {
                 onClick={handleResetProfile}
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:w-auto"
               >
-                Reset form
+                Atur ulang form
               </button>
             </div>
           </form>
         </SectionCard>
 
         <SectionCard className="space-y-5">
-          <div className="space-y-2">
-            <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
-              Keamanan akun
-            </span>
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-              Ganti password
-            </h2>
-            <p className="text-sm leading-6 text-slate-600">
-              Masukkan password saat ini dan password baru untuk memperbarui akses akun.
-            </p>
-          </div>
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Ganti password
+          </h2>
 
           {passwordError ? <ErrorState title="Ganti password gagal" message={passwordError} /> : null}
           {passwordSuccess ? (
@@ -318,7 +298,7 @@ function ProfilePage() {
                 onClick={handleResetPassword}
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:w-auto"
               >
-                Reset form
+                Atur ulang form
               </button>
             </div>
           </form>

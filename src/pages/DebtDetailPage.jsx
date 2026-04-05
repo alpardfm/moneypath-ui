@@ -197,7 +197,7 @@ function DebtDetailPage() {
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <SectionCard className="space-y-5">
-          <div className="space-y-2">
+          <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{debt.name}</h1>
               <span
@@ -206,10 +206,6 @@ function DebtDetailPage() {
                 {getDebtStatusLabel(debt.status)}
               </span>
             </div>
-            <p className="text-sm leading-6 text-slate-600">
-              Detail debt membantu kamu memeriksa nilai pokok, sisa hutang, dan metadata pendukung
-              sebelum mengubah data.
-            </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -257,19 +253,16 @@ function DebtDetailPage() {
             >
               {isInactivating ? 'Memproses...' : 'Nonaktifkan debt'}
             </button>
-            <span className="inline-flex items-center rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-500">
-              {canInactivate
-                ? 'Debt ini bisa dinonaktifkan karena sisa hutangnya nol.'
-                : 'Debt hanya bisa dinonaktifkan saat remaining amount sudah nol.'}
-            </span>
+            {!canInactivate ? (
+              <span className="inline-flex items-center rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-500">
+                Sisa hutang harus nol.
+              </span>
+            ) : null}
           </div>
 
           <SectionCard tone="subtle" className="space-y-4">
-            <div className="space-y-1">
+            <div>
               <p className="text-sm font-medium text-slate-700">Riwayat mutasi terkait</p>
-              <p className="text-sm leading-6 text-slate-500">
-                Riwayat ini menampilkan mutasi masuk maupun keluar yang terhubung ke debt ini.
-              </p>
             </div>
 
             {isHistoryLoading ? (
@@ -305,7 +298,7 @@ function DebtDetailPage() {
                             {getMutationLabel(mutation.type)}
                           </span>
                           <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-700">
-                            Debt linked
+                            Terkait debt
                           </span>
                         </div>
                         <p className="mt-3 text-lg font-semibold text-slate-900">

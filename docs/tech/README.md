@@ -24,3 +24,5 @@ Dokumen di folder ini fokus ke hal yang sudah benar-benar ada di codebase, supay
   Ringkasan summary module MVP: filter rentang tanggal, metrik ringkasan periode, net flow, dan saldo wallet aktif.
 - `phase-8-profile.md`  
   Ringkasan profile module MVP: ambil profil saat ini, update data akun, ganti password, dan feedback yang sederhana.
+- `phase-9-polish.md`  
+  Ringkasan polishing awal: konsistensi copy Bahasa Indonesia, label status yang lebih rapi, dan perbaikan friksi kecil di UI.

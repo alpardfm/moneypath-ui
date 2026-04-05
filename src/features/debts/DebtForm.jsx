@@ -17,7 +17,7 @@ function DebtForm({
     <SectionCard className="space-y-5">
       <div className="space-y-2">
         <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
-          {isEditMode ? 'Edit debt' : 'Debt baru'}
+          {isEditMode ? 'Ubah debt' : 'Debt baru'}
         </span>
         <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
           {isEditMode ? 'Perbarui metadata debt.' : 'Tambah debt baru.'}
@@ -47,14 +47,14 @@ function DebtForm({
             onChange={onChange}
             placeholder="Contoh: 1500000"
             error={errors.principalAmount}
-            hint="Hanya angka. Nilai ini hanya diisi saat create debt."
+            hint="Hanya angka. Nilai ini hanya diisi saat membuat debt."
           />
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
             id="tenorValue"
-            label="Tenor value"
+            label="Nilai tenor"
             type="number"
             value={form.tenorValue}
             onChange={onChange}
@@ -63,7 +63,7 @@ function DebtForm({
           />
           <FormField
             id="tenorUnit"
-            label="Tenor unit"
+            label="Satuan tenor"
             value={form.tenorUnit}
             onChange={onChange}
             options={tenorUnitOptions}
@@ -113,7 +113,7 @@ function DebtForm({
               onClick={onCancel}
               className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:w-auto"
             >
-              Reset form
+              Atur ulang form
             </button>
           ) : null}
         </div>
