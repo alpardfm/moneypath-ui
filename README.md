@@ -248,6 +248,7 @@ Catatan penting:
 - workflow ini hanya mengirim hasil build `dist/` ke server
 - konfigurasi web server di mesin tujuan tetap perlu sudah mengarah ke folder `DEPLOY_PATH`
 - untuk production build, Vite sudah diset memakai base path `/moneypath/`
+- GitHub Actions build production memakai `VITE_API_BASE_URL=https://alpardfm.my.id/api`
 - workflow tidak lagi mencoba membuat folder deploy secara otomatis di server
 - `DEPLOY_PATH` harus sudah ada dan harus writable untuk user `alpardfm`
 
