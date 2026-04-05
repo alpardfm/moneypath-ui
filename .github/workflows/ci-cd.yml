@@ -79,11 +79,13 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
-      - name: Ensure remote path exists
+      - name: Validate remote deploy path
         env:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          ssh "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "\
+            test -d '$DEPLOY_PATH' || (echo 'Path deploy belum ada: $DEPLOY_PATH' && exit 1); \
+            test -w '$DEPLOY_PATH' || (echo 'Path deploy tidak writable untuk user deploy: $DEPLOY_PATH' && exit 1)"
 
       - name: Sync dist to server
         env:

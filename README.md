@@ -248,3 +248,20 @@ Catatan penting:
 - workflow ini hanya mengirim hasil build `dist/` ke server
 - konfigurasi web server di mesin tujuan tetap perlu sudah mengarah ke folder `DEPLOY_PATH`
 - untuk production build, Vite sudah diset memakai base path `/moneypath/`
+- workflow tidak lagi mencoba membuat folder deploy secara otomatis di server
+- `DEPLOY_PATH` harus sudah ada dan harus writable untuk user `alpardfm`
+
+Persiapan server satu kali:
+
+```bash
+sudo mkdir -p /var/www/alpardfm.my.id/moneypath
+sudo chown -R alpardfm:alpardfm /var/www/alpardfm.my.id/moneypath
+```
+
+Kalau tidak ingin memberi akses tulis ke `/var/www`, gunakan folder yang memang writable untuk user deploy, misalnya:
+
+```text
+/home/alpardfm/apps/moneypath
+```
+
+Lalu arahkan web server ke folder tersebut.

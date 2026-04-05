@@ -247,6 +247,7 @@ Make the frontend feel stable and coherent.
 - standardize UI copy to full Bahasa Indonesia across the app
 - do not add language switch in MVP unless explicitly requested later
 - CI/CD GitHub Actions was added for lint, build, and SSH deploy to production subpath `/moneypath/`
+- deploy path on server must be prepared once and writable for the deploy user before GitHub Actions can publish build output
 
 ## Tasks
 - [x] standardize loading states
