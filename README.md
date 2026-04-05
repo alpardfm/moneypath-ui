@@ -217,3 +217,34 @@ It should win by being:
 - responsive
 - practical
 - honest to the product scope
+
+---
+
+## CI/CD
+
+Deploy otomatis sudah disiapkan lewat GitHub Actions.
+
+Alur:
+- `pull_request` ke `master`: menjalankan lint dan build
+- `push` ke `master`: menjalankan lint, build, lalu deploy via SSH
+
+Target deploy:
+- host: `103.87.67.209`
+- user: `alpardfm`
+- base path produksi frontend: `/moneypath/`
+- domain tujuan: `https://alpardfm.my.id/moneypath`
+
+File workflow:
+- `.github/workflows/ci-cd.yml`
+
+GitHub Secrets yang wajib diisi:
+- `DEPLOY_SSH_PRIVATE_KEY`
+  Isi private key dari `~/.ssh/id_ed25519`
+- `DEPLOY_PATH`
+  Isi absolute path folder server yang memang dilayani web server untuk `/moneypath`
+  Contoh yang umum: `/var/www/alpardfm.my.id/moneypath`
+
+Catatan penting:
+- workflow ini hanya mengirim hasil build `dist/` ke server
+- konfigurasi web server di mesin tujuan tetap perlu sudah mengarah ke folder `DEPLOY_PATH`
+- untuk production build, Vite sudah diset memakai base path `/moneypath/`

@@ -116,15 +116,11 @@ function DebtPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-3">
-        <p className="text-sm font-medium text-slate-500">Debts</p>
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-slate-500">Debt</p>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Kelola daftar hutang dengan tampilan yang jelas.
+          Daftar debt.
         </h1>
-        <p className="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-          Di phase ini kamu bisa melihat daftar debt, membuat debt baru, membuka detail debt, dan
-          memperbarui metadata debt dari halaman detail.
-        </p>
       </div>
 
       {formError ? <ErrorState title="Aksi debt gagal" message={formError} /> : null}
@@ -156,14 +152,11 @@ function DebtPage() {
             />
           ) : (
             <>
-              <SectionCard className="space-y-2">
-                <p className="text-sm font-medium text-slate-500">Debt list</p>
+              <SectionCard className="space-y-1">
+                <p className="text-sm font-medium text-slate-500">Daftar debt</p>
                 <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
                   {meta?.total_items || debts.length} debt aktif
                 </h2>
-                <p className="text-sm leading-6 text-slate-600">
-                  Status debt diturunkan dari backend: `active`, `lunas`, atau `inactive`.
-                </p>
               </SectionCard>
 
               <div className="space-y-4">
@@ -196,10 +189,6 @@ function DebtPage() {
                         Lihat detail
                       </Link>
                     </div>
-
-                    <p className="text-sm leading-6 text-slate-600">
-                      {debt.note || 'Belum ada catatan tambahan untuk debt ini.'}
-                    </p>
                   </SectionCard>
                 ))}
               </div>

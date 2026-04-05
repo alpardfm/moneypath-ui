@@ -4,10 +4,10 @@ export function getDebtStatusLabel(status) {
   }
 
   if (status === 'inactive') {
-    return 'Inactive'
+    return 'Nonaktif'
   }
 
-  return 'Active'
+  return 'Aktif'
 }
 
 export function getDebtStatusTone(status) {

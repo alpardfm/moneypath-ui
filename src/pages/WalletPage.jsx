@@ -138,15 +138,11 @@ function WalletPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-3">
-        <p className="text-sm font-medium text-slate-500">Wallets</p>
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-slate-500">Wallet</p>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Kelola wallet aktif dengan alur yang sederhana.
+          Wallet aktif.
         </h1>
-        <p className="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-          Wallet dipakai sebagai sumber penyimpanan uang. Di fase ini kamu bisa melihat wallet aktif,
-          menambah wallet baru, mengganti nama wallet, dan menonaktifkan wallet dengan saldo nol.
-        </p>
       </div>
 
       {formError ? <ErrorState title="Aksi wallet gagal" message={formError} /> : null}
@@ -178,15 +174,11 @@ function WalletPage() {
             />
           ) : (
             <>
-              <SectionCard className="space-y-2">
-                <p className="text-sm font-medium text-slate-500">Active wallets</p>
+              <SectionCard className="space-y-1">
+                <p className="text-sm font-medium text-slate-500">Wallet aktif</p>
                 <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
                   {meta?.total_items || wallets.length} wallet aktif
                 </h2>
-                <p className="text-sm leading-6 text-slate-600">
-                  Wallet aktif akan muncul sebagai pilihan pada flow mutasi. Wallet dengan saldo
-                  bukan nol tidak bisa dinonaktifkan.
-                </p>
               </SectionCard>
 
               <div className="space-y-4">
@@ -202,11 +194,11 @@ function WalletPage() {
                               {wallet.name}
                             </h3>
                             <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
-                              Active
+                              Aktif
                             </span>
                           </div>
                           <p className="mt-2 text-sm text-slate-500">
-                            Balance: {formatAmount(wallet.balance)}
+                            Saldo: {formatAmount(wallet.balance)}
                           </p>
                         </div>
 
@@ -227,12 +219,6 @@ function WalletPage() {
                           </button>
                         </div>
                       </div>
-
-                      <p className="text-sm leading-6 text-slate-600">
-                        {hasBalance
-                          ? 'Wallet ini belum bisa dinonaktifkan karena balance belum nol.'
-                          : 'Wallet ini bisa dinonaktifkan bila memang tidak ingin dipakai lagi.'}
-                      </p>
                     </SectionCard>
                   )
                 })}

@@ -246,11 +246,12 @@ Make the frontend feel stable and coherent.
 ## Notes
 - standardize UI copy to full Bahasa Indonesia across the app
 - do not add language switch in MVP unless explicitly requested later
+- CI/CD GitHub Actions was added for lint, build, and SSH deploy to production subpath `/moneypath/`
 
 ## Tasks
-- [ ] standardize loading states
-- [ ] standardize error states
-- [ ] standardize empty states
+- [x] standardize loading states
+- [x] standardize error states
+- [x] standardize empty states
 - [ ] review responsive behavior on mobile
 - [ ] review spacing and typography
 - [ ] review route guards
@@ -258,8 +259,8 @@ Make the frontend feel stable and coherent.
 - [ ] test all major flows manually
 - [ ] clean dead code
 - [ ] refactor repeated UI carefully
-- [ ] review UX friction in forms
-- [ ] standardize language usage across labels, buttons, helper text, and page copy
+- [x] review UX friction in forms
+- [x] standardize language usage across labels, buttons, helper text, and page copy
 
 ## Output
 - app feels consistent and ready for real use
@@ -273,6 +274,7 @@ Make the frontend feel stable and coherent.
 - [ ] richer dashboard presentation
 - [ ] consider optional dashboard date range only after summary flow is stable
 - [ ] consider bilingual support only after full copy consistency is finished
+- [ ] harden deployment workflow with environment protection, zero-downtime strategy, and rollback plan
 - [ ] category system
 - [ ] recurring transactions
 - [ ] notifications

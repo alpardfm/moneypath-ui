@@ -10,25 +10,25 @@ import { formatAmount } from '../utils/format-number.js'
 const metricCards = [
   {
     key: 'total_assets',
-    label: 'Total assets',
+    label: 'Total aset',
     valueKey: 'total_assets',
     tone: 'bg-emerald-50 text-emerald-700',
   },
   {
     key: 'total_debts',
-    label: 'Total debts',
+    label: 'Total utang',
     valueKey: 'total_debts',
     tone: 'bg-rose-50 text-rose-700',
   },
   {
     key: 'total_incoming',
-    label: 'Total incoming',
+    label: 'Total masuk',
     valueKey: 'total_incoming',
     tone: 'bg-sky-50 text-sky-700',
   },
   {
     key: 'total_outgoing',
-    label: 'Total outgoing',
+    label: 'Total keluar',
     valueKey: 'total_outgoing',
     tone: 'bg-amber-50 text-amber-700',
   },
@@ -112,15 +112,11 @@ function DashboardPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <p className="text-sm font-medium text-slate-500">Dashboard</p>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Ringkasan keuangan harian yang mudah dipindai.
+          Ringkasan keuangan.
         </h1>
-        <p className="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-          Dashboard ini menampilkan total aset, total utang, arus masuk, arus keluar, dan saldo
-          wallet aktif langsung dari backend.
-        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -139,10 +135,10 @@ function DashboardPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <SectionCard className="space-y-4">
+        <SectionCard className="space-y-3">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-slate-500">Net flow</p>
+              <p className="text-sm font-medium text-slate-500">Arus bersih</p>
               <h2 className="mt-1 text-3xl font-semibold tracking-tight text-slate-900">
                 {formatAmount(dashboard.net_flow)}
               </h2>
@@ -151,19 +147,12 @@ function DashboardPage() {
               {dashboard.wallets?.length || 0} wallet aktif
             </span>
           </div>
-          <p className="text-sm leading-6 text-slate-600">
-            Nilai ini dihitung dari total mutasi masuk dikurangi total mutasi keluar. Tampilan ini
-            dibuat sederhana supaya cepat dibaca di desktop maupun mobile.
-          </p>
         </SectionCard>
 
         {dashboard.wallets?.length ? (
-          <SectionCard className="space-y-4">
+          <SectionCard className="space-y-3">
             <div>
-              <p className="text-sm font-medium text-slate-500">Wallet balances</p>
-              <h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
-                Saldo wallet aktif
-              </h2>
+              <p className="text-sm font-medium text-slate-500">Saldo wallet</p>
             </div>
             <div className="space-y-3">
               {dashboard.wallets.map((wallet) => (

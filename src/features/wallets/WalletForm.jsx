@@ -16,7 +16,7 @@ function WalletForm({
     <SectionCard className="space-y-5">
       <div className="space-y-2">
         <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
-          {isEditMode ? 'Edit wallet' : 'Wallet baru'}
+          {isEditMode ? 'Ubah wallet' : 'Wallet baru'}
         </span>
         <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
           {isEditMode ? 'Perbarui nama wallet.' : 'Tambah wallet baru.'}

@@ -81,7 +81,7 @@ function RegisterPage() {
       navigate('/login', {
         replace: true,
         state: {
-          message: result.message || 'Account created successfully. Please login.',
+          message: result.message || 'Akun berhasil dibuat. Silakan masuk.',
         },
       })
     } catch (error) {
@@ -94,15 +94,8 @@ function RegisterPage() {
   return (
     <PageContainer className="flex min-h-screen items-center py-8 sm:py-10" size="narrow">
       <SectionCard className="w-full space-y-6">
-        <div className="space-y-3">
-          <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-sm font-medium text-sky-700">
-            Phase 2 auth
-          </span>
+        <div className="space-y-2">
           <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Buat akun baru.</h1>
-          <p className="max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-            Form ini mengirim data register ke backend. Jika backend mengembalikan token, user akan
-            langsung dianggap login. Jika tidak, user akan diarahkan ke login dengan pesan sukses.
-          </p>
         </div>
 
         {submitError ? (
@@ -154,15 +147,15 @@ function RegisterPage() {
             disabled={isSubmitting}
             className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:bg-slate-400"
           >
-            {isSubmitting ? 'Sedang membuat akun...' : 'Register'}
+              {isSubmitting ? 'Sedang membuat akun...' : 'Daftar'}
           </button>
         </form>
 
         <p className="text-sm text-slate-600">
-          Sudah punya akun? kembali ke{' '}
-          <Link className="font-medium text-slate-900 underline" to="/login">
-            login
-          </Link>
+          Sudah punya akun? kembali ke halaman{' '}
+            <Link className="font-medium text-slate-900 underline" to="/login">
+              masuk
+            </Link>
           .
         </p>
       </SectionCard>

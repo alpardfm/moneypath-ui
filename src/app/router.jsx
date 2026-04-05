@@ -15,79 +15,84 @@ import SummaryPage from '../pages/SummaryPage.jsx'
 import WalletDetailPage from '../pages/WalletDetailPage.jsx'
 import WalletPage from '../pages/WalletPage.jsx'
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Navigate to="/app/dashboard" replace />,
+    },
+    {
+      path: '/login',
+      element: (
+        <PublicOnlyRoute>
+          <LoginPage />
+        </PublicOnlyRoute>
+      ),
+    },
+    {
+      path: '/register',
+      element: (
+        <PublicOnlyRoute>
+          <RegisterPage />
+        </PublicOnlyRoute>
+      ),
+    },
+    {
+      path: '/app',
+      element: (
+        <ProtectedRoute>
+          <AppShell />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          index: true,
+          element: <Navigate to="/app/dashboard" replace />,
+        },
+        {
+          path: 'dashboard',
+          element: <DashboardPage />,
+        },
+        {
+          path: 'wallets',
+          element: <WalletPage />,
+        },
+        {
+          path: 'wallets/:walletId',
+          element: <WalletDetailPage />,
+        },
+        {
+          path: 'debts',
+          element: <DebtPage />,
+        },
+        {
+          path: 'debts/:debtId',
+          element: <DebtDetailPage />,
+        },
+        {
+          path: 'mutations',
+          element: <MutationPage />,
+        },
+        {
+          path: 'summary',
+          element: <SummaryPage />,
+        },
+        {
+          path: 'profile',
+          element: <ProfilePage />,
+        },
+        {
+          path: 'mutations/:mutationId',
+          element: <MutationEditPage />,
+        },
+      ],
+    },
+    {
+      path: '*',
+      element: <NotFoundPage />,
+    },
+  ],
   {
-    path: '/',
-    element: <Navigate to="/app/dashboard" replace />,
+    basename: import.meta.env.BASE_URL,
   },
-  {
-    path: '/login',
-    element: (
-      <PublicOnlyRoute>
-        <LoginPage />
-      </PublicOnlyRoute>
-    ),
-  },
-  {
-    path: '/register',
-    element: (
-      <PublicOnlyRoute>
-        <RegisterPage />
-      </PublicOnlyRoute>
-    ),
-  },
-  {
-    path: '/app',
-    element: (
-      <ProtectedRoute>
-        <AppShell />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: <Navigate to="/app/dashboard" replace />,
-      },
-      {
-        path: 'dashboard',
-        element: <DashboardPage />,
-      },
-      {
-        path: 'wallets',
-        element: <WalletPage />,
-      },
-      {
-        path: 'wallets/:walletId',
-        element: <WalletDetailPage />,
-      },
-      {
-        path: 'debts',
-        element: <DebtPage />,
-      },
-      {
-        path: 'debts/:debtId',
-        element: <DebtDetailPage />,
-      },
-      {
-        path: 'mutations',
-        element: <MutationPage />,
-      },
-      {
-        path: 'summary',
-        element: <SummaryPage />,
-      },
-      {
-        path: 'profile',
-        element: <ProfilePage />,
-      },
-      {
-        path: 'mutations/:mutationId',
-        element: <MutationEditPage />,
-      },
-    ],
-  },
-  {
-    path: '*',
-    element: <NotFoundPage />,
-  },
-])
+)
