@@ -13,11 +13,21 @@ function FormField({
   step,
   min,
   max,
+  className = '',
 }) {
   const hasOptions = Array.isArray(options) && options.length > 0
+  const fieldClassName = [
+    'w-full min-w-0 rounded-2xl border bg-white px-4 py-3 text-sm text-slate-900 outline-none transition',
+    type === 'date' ? 'max-w-full' : '',
+    error
+      ? 'border-rose-300 ring-2 ring-rose-100'
+      : 'border-slate-200 focus:border-slate-400 focus:ring-2 focus:ring-slate-200',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <label htmlFor={id} className="block space-y-2">
+    <label htmlFor={id} className={['block min-w-0 space-y-2', className].filter(Boolean).join(' ')}>
       <span className="text-sm font-medium text-slate-700">{label}</span>
       {hasOptions ? (
         <select
@@ -28,12 +38,7 @@ function FormField({
           autoComplete={autoComplete}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-          className={[
-            'w-full rounded-2xl border bg-white px-4 py-3 text-sm text-slate-900 outline-none transition',
-            error
-              ? 'border-rose-300 ring-2 ring-rose-100'
-              : 'border-slate-200 focus:border-slate-400 focus:ring-2 focus:ring-slate-200',
-          ].join(' ')}
+          className={fieldClassName}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -56,12 +61,7 @@ function FormField({
           max={max}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-          className={[
-            'w-full rounded-2xl border bg-white px-4 py-3 text-sm text-slate-900 outline-none transition',
-            error
-              ? 'border-rose-300 ring-2 ring-rose-100'
-              : 'border-slate-200 focus:border-slate-400 focus:ring-2 focus:ring-slate-200',
-          ].join(' ')}
+          className={fieldClassName}
         />
       )}
       {hint ? (

@@ -101,13 +101,14 @@ function SummaryPage() {
           </h2>
         </div>
 
-        <form className="grid gap-4 lg:grid-cols-[1fr_1fr_auto_auto]" onSubmit={handleSubmit}>
+        <form className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto]" onSubmit={handleSubmit}>
           <FormField
             id="from"
             label="Dari tanggal"
             type="date"
             value={filters.from}
             onChange={handleFilterChange}
+            className="min-w-0"
           />
           <FormField
             id="to"
@@ -115,17 +116,18 @@ function SummaryPage() {
             type="date"
             value={filters.to}
             onChange={handleFilterChange}
+            className="min-w-0"
           />
           <button
             type="submit"
-            className="mt-auto w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 lg:w-auto"
+            className="mt-auto w-full min-w-0 rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 lg:w-auto"
           >
             Terapkan
           </button>
           <button
             type="button"
             onClick={handleReset}
-            className="mt-auto w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 lg:w-auto"
+            className="mt-auto w-full min-w-0 rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 lg:w-auto"
           >
             Atur ulang
           </button>
