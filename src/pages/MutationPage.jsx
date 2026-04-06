@@ -3,8 +3,10 @@ import { Link, useLocation } from 'react-router-dom'
 import EmptyState from '../components/feedback/EmptyState.jsx'
 import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
+import SuccessBanner from '../components/feedback/SuccessBanner.jsx'
 import FormField from '../components/forms/FormField.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
+import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import { listDebts } from '../features/debts/debt-service.js'
 import MutationForm from '../features/mutations/MutationForm.jsx'
@@ -237,20 +239,11 @@ function MutationPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-slate-500">Mutasi</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Mutasi uang.
-        </h1>
-      </div>
+      <PageHeader eyebrow="Mutasi" title="Mutasi uang." />
 
       {formError ? <ErrorState title="Aksi mutasi gagal" message={formError} /> : null}
 
-      {formSuccess ? (
-        <SectionCard tone="subtle" className="border-emerald-200 bg-emerald-50">
-          <p className="text-sm text-emerald-800">{formSuccess}</p>
-        </SectionCard>
-      ) : null}
+      <SuccessBanner message={formSuccess} />
 
       <SectionCard className="space-y-4">
         <div className="space-y-1">

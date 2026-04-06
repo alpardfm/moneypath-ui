@@ -1,5 +1,6 @@
 import { api } from '../../services/api.js'
 import { extractApiMessage } from '../../utils/api-message.js'
+import { createServiceError } from '../../utils/service-error.js'
 
 function extractToken(payload) {
   if (!payload || typeof payload !== 'object') {
@@ -36,13 +37,6 @@ function extractMessage(payload, fallbackMessage) {
   return extractApiMessage(payload, fallbackMessage)
 }
 
-function createAuthError(error, fallbackMessage) {
-  const authError = new Error(extractMessage(error?.payload, fallbackMessage))
-  authError.status = error?.status
-  authError.payload = error?.payload
-  return authError
-}
-
 export async function loginUser(formData) {
   try {
     const payload = await api.post('/auth/login', {
@@ -53,7 +47,10 @@ export async function loginUser(formData) {
     const token = extractToken(payload)
 
     if (!token) {
-      throw createAuthError({ payload }, 'Login berhasil, tetapi token tidak ditemukan.')
+      throw createServiceError(
+        { payload },
+        'Login berhasil, tetapi token tidak ditemukan.',
+      )
     }
 
     return {
@@ -61,7 +58,7 @@ export async function loginUser(formData) {
       token,
     }
   } catch (error) {
-    throw createAuthError(error, 'Tidak bisa masuk dengan kredensial yang diberikan.')
+    throw createServiceError(error, 'Tidak bisa masuk dengan kredensial yang diberikan.')
   }
 }
 
@@ -80,6 +77,6 @@ export async function registerUser(formData) {
       message: extractMessage(payload, 'Akun berhasil dibuat.'),
     }
   } catch (error) {
-    throw createAuthError(error, 'Akun belum bisa dibuat saat ini.')
+    throw createServiceError(error, 'Akun belum bisa dibuat saat ini.')
   }
 }

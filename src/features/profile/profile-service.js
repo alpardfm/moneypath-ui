@@ -1,19 +1,12 @@
 import { api } from '../../services/api.js'
-import { extractApiMessage } from '../../utils/api-message.js'
-
-function createProfileError(error, fallbackMessage) {
-  const profileError = new Error(extractApiMessage(error?.payload, fallbackMessage))
-  profileError.status = error?.status
-  profileError.payload = error?.payload
-  return profileError
-}
+import { createServiceError } from '../../utils/service-error.js'
 
 export async function getCurrentProfile() {
   try {
     const payload = await api.get('/me')
     return payload?.data || null
   } catch (error) {
-    throw createProfileError(error, 'Gagal memuat profil.')
+    throw createServiceError(error, 'Gagal memuat profil.')
   }
 }
 
@@ -27,7 +20,7 @@ export async function updateCurrentProfile(form) {
 
     return payload?.data || null
   } catch (error) {
-    throw createProfileError(error, 'Gagal memperbarui profil.')
+    throw createServiceError(error, 'Gagal memperbarui profil.')
   }
 }
 
@@ -40,6 +33,6 @@ export async function changeCurrentPassword(form) {
 
     return payload?.data || null
   } catch (error) {
-    throw createProfileError(error, 'Gagal mengganti password.')
+    throw createServiceError(error, 'Gagal mengganti password.')
   }
 }

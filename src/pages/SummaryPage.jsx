@@ -4,6 +4,7 @@ import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
 import FormField from '../components/forms/FormField.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
+import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import { getSummaryReport } from '../features/summary/summary-service.js'
 import {
@@ -86,12 +87,7 @@ function SummaryPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-slate-500">Ringkasan</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Ringkasan periode.
-        </h1>
-      </div>
+      <PageHeader eyebrow="Ringkasan" title="Ringkasan periode." />
 
       <SectionCard className="space-y-4">
         <div className="space-y-1">

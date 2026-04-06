@@ -1,6 +1,36 @@
 import { clearAuthToken, getAuthToken } from '../utils/auth.js'
+import { extractApiMessage } from '../utils/api-message.js'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
+
+async function parseResponseBody(response) {
+  if (response.status === 204) {
+    return null
+  }
+
+  const contentLength = response.headers.get('content-length')
+
+  if (contentLength === '0') {
+    return null
+  }
+
+  const contentType = response.headers.get('content-type') || ''
+  const responseText = await response.text()
+
+  if (!responseText) {
+    return null
+  }
+
+  if (contentType.includes('application/json')) {
+    try {
+      return JSON.parse(responseText)
+    } catch {
+      return responseText
+    }
+  }
+
+  return responseText
+}
 
 async function request(path, options = {}) {
   const token = getAuthToken()
@@ -23,13 +53,13 @@ async function request(path, options = {}) {
     clearAuthToken()
   }
 
-  const contentType = response.headers.get('content-type') || ''
-  const payload = contentType.includes('application/json')
-    ? await response.json()
-    : await response.text()
+  const payload = await parseResponseBody(response)
 
   if (!response.ok) {
-    const error = new Error('API request failed')
+    const fallbackMessage = response.statusText
+      ? `Permintaan gagal (${response.status} ${response.statusText}).`
+      : `Permintaan gagal (${response.status}).`
+    const error = new Error(extractApiMessage(payload, fallbackMessage))
     error.status = response.status
     error.payload = payload
     throw error

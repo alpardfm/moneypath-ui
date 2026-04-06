@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import EmptyState from '../components/feedback/EmptyState.jsx'
 import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
+import SuccessBanner from '../components/feedback/SuccessBanner.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import { getMutationLabel, getMutationTone } from '../features/mutations/mutation-utils.js'
@@ -180,17 +181,15 @@ function WalletDetailPage() {
 
       {formError ? <ErrorState title="Aksi wallet gagal" message={formError} /> : null}
 
-      {formSuccess ? (
-        <SectionCard tone="subtle" className="border-emerald-200 bg-emerald-50">
-          <p className="text-sm text-emerald-800">{formSuccess}</p>
-        </SectionCard>
-      ) : null}
+      <SuccessBanner message={formSuccess} />
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <SectionCard className="space-y-5">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{wallet.name}</h1>
+              <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+                {wallet.name}
+              </h1>
               <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
                 Aktif
               </span>
@@ -212,7 +211,7 @@ function WalletDetailPage() {
               {isInactivating ? 'Memproses...' : 'Nonaktifkan wallet'}
             </button>
             {!hasBalance ? null : (
-              <span className="inline-flex items-center rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-500">
+              <span className="inline-flex w-full items-center rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-500 sm:w-auto">
                 Saldo harus nol.
               </span>
             )}
@@ -272,7 +271,7 @@ function WalletDetailPage() {
 
                       <Link
                         to={`/app/mutations/${mutation.id}`}
-                        className="inline-flex rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+                        className="inline-flex w-full justify-center rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:w-auto"
                       >
                         Lihat mutasi
                       </Link>

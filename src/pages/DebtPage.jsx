@@ -3,7 +3,9 @@ import { Link, useLocation } from 'react-router-dom'
 import EmptyState from '../components/feedback/EmptyState.jsx'
 import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
+import SuccessBanner from '../components/feedback/SuccessBanner.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
+import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import DebtForm from '../features/debts/DebtForm.jsx'
 import { createDebt, listDebts } from '../features/debts/debt-service.js'
@@ -116,20 +118,11 @@ function DebtPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-slate-500">Debt</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Daftar debt.
-        </h1>
-      </div>
+      <PageHeader eyebrow="Debt" title="Daftar debt." />
 
       {formError ? <ErrorState title="Aksi debt gagal" message={formError} /> : null}
 
-      {formSuccess ? (
-        <SectionCard tone="subtle" className="border-emerald-200 bg-emerald-50">
-          <p className="text-sm text-emerald-800">{formSuccess}</p>
-        </SectionCard>
-      ) : null}
+      <SuccessBanner message={formSuccess} />
 
       <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <section className="space-y-4">

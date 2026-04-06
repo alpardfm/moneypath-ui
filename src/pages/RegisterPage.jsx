@@ -147,15 +147,15 @@ function RegisterPage() {
             disabled={isSubmitting}
             className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:bg-slate-400"
           >
-              {isSubmitting ? 'Sedang membuat akun...' : 'Daftar'}
+            {isSubmitting ? 'Sedang membuat akun...' : 'Daftar'}
           </button>
         </form>
 
         <p className="text-sm text-slate-600">
           Sudah punya akun? kembali ke halaman{' '}
-            <Link className="font-medium text-slate-900 underline" to="/login">
-              masuk
-            </Link>
+          <Link className="font-medium text-slate-900 underline" to="/login">
+            masuk
+          </Link>
           .
         </p>
       </SectionCard>

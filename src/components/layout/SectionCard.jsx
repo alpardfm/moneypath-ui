@@ -13,7 +13,7 @@ function SectionCard({
   return (
     <Component
       className={[
-        'rounded-3xl border p-5 shadow-sm sm:p-6',
+        'rounded-3xl border p-4 shadow-sm sm:p-6',
         toneClasses[tone] || toneClasses.default,
         className,
       ]

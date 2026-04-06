@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
+import SuccessBanner from '../components/feedback/SuccessBanner.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import { getDebtById, listDebts } from '../features/debts/debt-service.js'
@@ -240,11 +241,7 @@ function MutationEditPage() {
 
       {formError ? <ErrorState title="Aksi mutasi gagal" message={formError} /> : null}
 
-      {formSuccess ? (
-        <SectionCard tone="subtle" className="border-emerald-200 bg-emerald-50">
-          <p className="text-sm text-emerald-800">{formSuccess}</p>
-        </SectionCard>
-      ) : null}
+      <SuccessBanner message={formSuccess} />
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <SectionCard className="space-y-5">
@@ -259,7 +256,7 @@ function MutationEditPage() {
                 </span>
               ) : null}
             </div>
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
               {formatAmount(mutation.amount)}
             </h1>
             <p className="text-sm leading-6 text-slate-600">{mutation.description}</p>
@@ -267,12 +264,12 @@ function MutationEditPage() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">ID wallet</p>
-              <p className="mt-2 text-sm font-semibold text-slate-900">{mutation.wallet_id}</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Wallet</p>
+              <p className="mt-2 break-all text-sm font-semibold text-slate-900">{mutation.wallet_id}</p>
             </div>
             <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">ID debt</p>
-              <p className="mt-2 text-sm font-semibold text-slate-900">{mutation.debt_id || '-'}</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Debt</p>
+              <p className="mt-2 break-all text-sm font-semibold text-slate-900">{mutation.debt_id || '-'}</p>
             </div>
             <div className="rounded-2xl bg-slate-50 px-4 py-3">
               <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Aksi debt</p>

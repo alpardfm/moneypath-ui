@@ -3,6 +3,7 @@ import EmptyState from '../components/feedback/EmptyState.jsx'
 import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
+import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import { getDashboardOverview } from '../features/dashboard/dashboard-service.js'
 import { formatAmount } from '../utils/format-number.js'
@@ -60,12 +61,7 @@ function DashboardPage() {
   if (isLoading) {
     return (
       <PageContainer className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-slate-500">Dashboard</p>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Menyiapkan ringkasan keuangan kamu.
-          </h1>
-        </div>
+        <PageHeader eyebrow="Dashboard" title="Menyiapkan ringkasan keuangan kamu." />
         <LoadingState
           title="Memuat dashboard"
           message="Saldo wallet dan ringkasan arus kas sedang diambil dari server."
@@ -77,12 +73,7 @@ function DashboardPage() {
   if (errorMessage) {
     return (
       <PageContainer className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-slate-500">Dashboard</p>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Dashboard belum bisa dimuat.
-          </h1>
-        </div>
+        <PageHeader eyebrow="Dashboard" title="Dashboard belum bisa dimuat." />
         <ErrorState
           title="Gagal mengambil data dashboard"
           message={errorMessage}
@@ -96,12 +87,7 @@ function DashboardPage() {
   if (!dashboard) {
     return (
       <PageContainer className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-slate-500">Dashboard</p>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Belum ada data dashboard.
-          </h1>
-        </div>
+        <PageHeader eyebrow="Dashboard" title="Belum ada data dashboard." />
         <EmptyState
           title="Dashboard masih kosong"
           message="Pastikan akun kamu sudah punya wallet atau mutasi agar ringkasan bisa ditampilkan."
@@ -112,12 +98,7 @@ function DashboardPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-slate-500">Dashboard</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Ringkasan keuangan.
-        </h1>
-      </div>
+      <PageHeader eyebrow="Dashboard" title="Ringkasan keuangan." />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metricCards.map((item) => (

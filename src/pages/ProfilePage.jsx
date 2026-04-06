@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
+import SuccessBanner from '../components/feedback/SuccessBanner.jsx'
 import FormField from '../components/forms/FormField.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
+import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import {
   changeCurrentPassword,
@@ -192,12 +194,7 @@ function ProfilePage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-slate-500">Profil</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Profil akun.
-        </h1>
-      </div>
+      <PageHeader eyebrow="Profil" title="Profil akun." />
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <SectionCard className="space-y-5">
@@ -206,11 +203,7 @@ function ProfilePage() {
           </h2>
 
           {profileError ? <ErrorState title="Perubahan profil gagal" message={profileError} /> : null}
-          {profileSuccess ? (
-            <SectionCard tone="subtle" className="border-emerald-200 bg-emerald-50">
-              <p className="text-sm text-emerald-800">{profileSuccess}</p>
-            </SectionCard>
-          ) : null}
+          <SuccessBanner message={profileSuccess} />
 
           <form className="space-y-4" onSubmit={handleProfileSubmit}>
             <FormField
@@ -261,11 +254,7 @@ function ProfilePage() {
           </h2>
 
           {passwordError ? <ErrorState title="Ganti password gagal" message={passwordError} /> : null}
-          {passwordSuccess ? (
-            <SectionCard tone="subtle" className="border-emerald-200 bg-emerald-50">
-              <p className="text-sm text-emerald-800">{passwordSuccess}</p>
-            </SectionCard>
-          ) : null}
+          <SuccessBanner message={passwordSuccess} />
 
           <form className="space-y-4" onSubmit={handlePasswordSubmit}>
             <FormField

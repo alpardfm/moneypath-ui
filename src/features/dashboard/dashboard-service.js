@@ -1,11 +1,16 @@
 import { api } from '../../services/api.js'
+import { createServiceError } from '../../utils/service-error.js'
 
 export async function getDashboardOverview() {
-  const payload = await api.get('/dashboard')
+  try {
+    const payload = await api.get('/dashboard')
 
-  if (!payload || typeof payload !== 'object') {
-    throw new Error('Dashboard response is invalid.')
+    if (!payload || typeof payload !== 'object') {
+      throw new Error('Respons dashboard tidak valid.')
+    }
+
+    return payload.data || null
+  } catch (error) {
+    throw createServiceError(error, 'Gagal memuat dashboard.')
   }
-
-  return payload.data || null
 }
