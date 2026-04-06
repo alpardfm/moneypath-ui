@@ -1,12 +1,5 @@
 import { api } from '../../services/api.js'
-import { extractApiMessage } from '../../utils/api-message.js'
-
-function createDebtError(error, fallbackMessage) {
-  const debtError = new Error(extractApiMessage(error?.payload, fallbackMessage))
-  debtError.status = error?.status
-  debtError.payload = error?.payload
-  return debtError
-}
+import { createServiceError } from '../../utils/service-error.js'
 
 function toOptionalString(value) {
   const trimmed = String(value || '').trim()
@@ -86,6 +79,26 @@ export async function listDebts(params = {}) {
   }
 }
 
+export async function listArchivedDebts(params = {}) {
+  const query = new URLSearchParams()
+
+  if (params.page) {
+    query.set('page', String(params.page))
+  }
+
+  if (params.pageSize) {
+    query.set('page_size', String(params.pageSize))
+  }
+
+  const suffix = query.toString() ? `?${query.toString()}` : ''
+  const payload = await api.get(`/debts/archive${suffix}`)
+
+  return {
+    items: payload?.data || [],
+    meta: payload?.meta || null,
+  }
+}
+
 export async function getDebtById(debtID) {
   const payload = await api.get(`/debts/${debtID}`)
   return payload?.data || null
@@ -96,7 +109,7 @@ export async function createDebt(form) {
     const payload = await api.post('/debts', buildCreatePayload(form))
     return payload?.data || null
   } catch (error) {
-    throw createDebtError(error, 'Gagal membuat debt.')
+    throw createServiceError(error, 'Gagal membuat debt.')
   }
 }
 
@@ -105,7 +118,7 @@ export async function updateDebt(debtID, form) {
     const payload = await api.put(`/debts/${debtID}`, buildUpdatePayload(form))
     return payload?.data || null
   } catch (error) {
-    throw createDebtError(error, 'Gagal memperbarui debt.')
+    throw createServiceError(error, 'Gagal memperbarui debt.')
   }
 }
 
@@ -114,6 +127,6 @@ export async function inactivateDebt(debtID) {
     const payload = await api.delete(`/debts/${debtID}`)
     return payload?.data || null
   } catch (error) {
-    throw createDebtError(error, 'Gagal menonaktifkan debt.')
+    throw createServiceError(error, 'Gagal menonaktifkan debt.')
   }
 }

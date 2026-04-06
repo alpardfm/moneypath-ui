@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../app/providers/useAuth.jsx'
 import ErrorState from '../components/feedback/ErrorState.jsx'
+import SuccessBanner from '../components/feedback/SuccessBanner.jsx'
 import FormField from '../components/forms/FormField.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
@@ -82,11 +83,7 @@ function LoginPage() {
           </h1>
         </div>
 
-        {location.state?.message ? (
-          <SectionCard tone="subtle" className="border-emerald-200 bg-emerald-50">
-            <p className="text-sm text-emerald-800">{location.state.message}</p>
-          </SectionCard>
-        ) : null}
+        <SuccessBanner message={location.state?.message} />
 
         {submitError ? (
           <ErrorState

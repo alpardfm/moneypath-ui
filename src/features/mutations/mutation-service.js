@@ -1,13 +1,6 @@
 import { api } from '../../services/api.js'
-import { extractApiMessage } from '../../utils/api-message.js'
+import { createServiceError } from '../../utils/service-error.js'
 import { toIsoDateTime } from './mutation-utils.js'
-
-function createMutationError(error, fallbackMessage) {
-  const mutationError = new Error(extractApiMessage(error?.payload, fallbackMessage))
-  mutationError.status = error?.status
-  mutationError.payload = error?.payload
-  return mutationError
-}
 
 function toOptionalString(value) {
   const trimmed = String(value || '').trim()
@@ -106,6 +99,10 @@ export async function listMutations(filters) {
     query.set('wallet_id', filters.walletId)
   }
 
+  if (filters.categoryId) {
+    query.set('category_id', filters.categoryId)
+  }
+
   if (filters.debtId) {
     query.set('debt_id', filters.debtId)
   }
@@ -153,7 +150,7 @@ export async function createMutation(form) {
     const payload = await api.post('/mutations', buildMutationPayload(form))
     return payload?.data || null
   } catch (error) {
-    throw createMutationError(error, 'Gagal membuat mutasi.')
+    throw createServiceError(error, 'Gagal membuat mutasi.')
   }
 }
 
@@ -162,6 +159,6 @@ export async function updateMutation(mutationId, form) {
     const payload = await api.put(`/mutations/${mutationId}`, buildMutationPayload(form))
     return payload?.data || null
   } catch (error) {
-    throw createMutationError(error, 'Gagal memperbarui mutasi.')
+    throw createServiceError(error, 'Gagal memperbarui mutasi.')
   }
 }

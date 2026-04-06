@@ -248,18 +248,23 @@ Make the frontend feel stable and coherent.
 - do not add language switch in MVP unless explicitly requested later
 - CI/CD GitHub Actions was added for lint, build, and SSH deploy to production subpath `/moneypath/`
 - deploy path on server must be prepared once and writable for the deploy user before GitHub Actions can publish build output
+- public and protected route guards were reviewed so auth-ready checks are consistent before redirecting
+- API service error handling was tightened so empty responses, nested backend messages, and fallback status text are handled more safely
+- repeated success feedback banners were refactored into a shared component to keep UI behavior more consistent
+- top-level page headers now use a shared layout pattern so title spacing and typography stay more even across major pages
+- dead navigation branches that were no longer used were removed from the app shell to reduce low-value code paths
 
 ## Tasks
 - [x] standardize loading states
 - [x] standardize error states
 - [x] standardize empty states
-- [ ] review responsive behavior on mobile
-- [ ] review spacing and typography
-- [ ] review route guards
-- [ ] review API error mapping
-- [ ] test all major flows manually
-- [ ] clean dead code
-- [ ] refactor repeated UI carefully
+- [x] review responsive behavior on mobile
+- [x] review spacing and typography
+- [x] review route guards
+- [x] review API error mapping
+- [x] test all major flows manually
+- [x] clean dead code
+- [x] refactor repeated UI carefully
 - [x] review UX friction in forms
 - [x] standardize language usage across labels, buttons, helper text, and page copy
 
@@ -268,16 +273,64 @@ Make the frontend feel stable and coherent.
 
 ---
 
+# Backend Sync Notes
+
+Recent backend changes that FE should now be aware of:
+- `GET /dashboard` now returns extra chart-ready fields:
+  - `monthly_trend`
+  - `outgoing_categories`
+- new archive endpoints are available:
+  - `GET /wallets/archive`
+  - `GET /debts/archive`
+- new notification feed endpoint is available:
+  - `GET /notifications`
+- backend post-MVP modules that now already exist:
+  - category system
+  - recurring transactions
+  - monthly analytics
+  - financial health scoring
+  - leakage detection
+  - export/report
+  - richer settings
+
+---
+
+# Phase 10 — Backend Sync Follow-up
+
+## Goal
+Adapt the UI to the latest backend capabilities that were added after the initial frontend MVP phases.
+
+## Tasks
+- [x] update dashboard page to consume `monthly_trend`
+- [x] add chart component for monthly incoming / outgoing / net flow
+- [x] update dashboard page to consume `outgoing_categories`
+- [x] add outgoing category breakdown chart/card
+- [x] add wallet archive page or archive section using `GET /wallets/archive`
+- [x] add debt archive page or archive section using `GET /debts/archive`
+- [x] add notifications page, drawer, or dropdown using `GET /notifications`
+- [x] show recurring due notifications clearly
+- [x] show active debt reminder notifications clearly
+- [x] decide where financial health score should appear in UI
+- [x] decide where leakage detection insights should appear in UI
+- [x] decide where export/report action should live in summary or mutation pages
+- [x] add category management UI if not already exposed clearly
+- [x] add settings UI for:
+  preferred currency, timezone, date format, and week start day
+- [x] verify API typings/contracts for new backend response fields
+
+## Output
+- frontend fully reflects the latest backend surface
+- dashboard becomes more visual
+- archive and notification flows become usable in UI
+
+---
+
 # Later Backlog
 
 ## After MVP
-- [ ] better mutation filtering
-- [ ] richer dashboard presentation
+- [x] better mutation filtering
+- [x] richer dashboard presentation
 - [ ] consider optional dashboard date range only after summary flow is stable
 - [ ] consider bilingual support only after full copy consistency is finished
-- [ ] harden deployment workflow with environment protection, zero-downtime strategy, and rollback plan
-- [ ] category system
-- [ ] recurring transactions
-- [ ] notifications
-- [ ] export/report
-- [ ] advanced settings
+- [x] harden deployment workflow with environment protection, zero-downtime strategy, and rollback plan
+- [x] advanced settings polish beyond current backend settings scope

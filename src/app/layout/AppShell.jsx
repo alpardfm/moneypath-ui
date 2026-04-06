@@ -3,12 +3,13 @@ import { useAuth } from '../providers/useAuth.jsx'
 import PageContainer from '../../components/layout/PageContainer.jsx'
 
 const navigationItems = [
-  { label: 'Dashboard', shortLabel: 'Beranda', to: '/app/dashboard', enabled: true },
-  { label: 'Wallet', shortLabel: 'Wallet', to: '/app/wallets', enabled: true },
-  { label: 'Debt', shortLabel: 'Debt', to: '/app/debts', enabled: true },
-  { label: 'Mutasi', shortLabel: 'Mutasi', to: '/app/mutations', enabled: true },
-  { label: 'Ringkasan', shortLabel: 'Ringkas', to: '/app/summary', enabled: true },
-  { label: 'Profil', shortLabel: 'Profil', to: '/app/profile', enabled: true },
+  { label: 'Dashboard', shortLabel: 'Beranda', to: '/app/dashboard' },
+  { label: 'Wallet', shortLabel: 'Wallet', to: '/app/wallets' },
+  { label: 'Debt', shortLabel: 'Debt', to: '/app/debts' },
+  { label: 'Mutasi', shortLabel: 'Mutasi', to: '/app/mutations' },
+  { label: 'Notifikasi', shortLabel: 'Notif', to: '/app/notifications' },
+  { label: 'Ringkasan', shortLabel: 'Ringkas', to: '/app/summary' },
+  { label: 'Profil', shortLabel: 'Profil', to: '/app/profile' },
 ]
 
 function AppShell() {
@@ -37,31 +38,22 @@ function AppShell() {
           </div>
 
           <nav className="hidden flex-wrap gap-2 md:flex">
-            {navigationItems.map((item) =>
-              item.enabled ? (
-                <NavLink
-                  key={item.label}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    [
-                      'rounded-full px-4 py-2 text-sm font-medium transition',
-                      isActive
-                        ? 'bg-slate-900 text-white'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
-                    ].join(' ')
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ) : (
-                <span
-                  key={item.label}
-                  className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-400"
-                >
-                  {item.label}
-                </span>
-              ),
-            )}
+            {navigationItems.map((item) => (
+              <NavLink
+                key={item.label}
+                to={item.to}
+                className={({ isActive }) =>
+                  [
+                    'rounded-full px-4 py-2 text-sm font-medium transition',
+                    isActive
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                  ].join(' ')
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
           </nav>
         </PageContainer>
       </header>
@@ -72,32 +64,23 @@ function AppShell() {
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur md:hidden">
         <PageContainer className="px-0" size="app">
-          <div className="grid grid-cols-6 gap-2">
-            {navigationItems.map((item) =>
-              item.enabled ? (
-                <NavLink
-                  key={item.label}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    [
-                      'flex min-h-14 items-center justify-center rounded-2xl px-3 text-xs font-medium transition',
-                      isActive
-                        ? 'bg-slate-900 text-white'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
-                    ].join(' ')
-                  }
-                >
-                  {item.shortLabel}
-                </NavLink>
-              ) : (
-                <span
-                  key={item.label}
-                  className="flex min-h-14 items-center justify-center rounded-2xl bg-slate-100 px-3 text-center text-xs font-medium text-slate-400"
-                >
-                  {item.shortLabel}
-                </span>
-              ),
-            )}
+          <div className="grid grid-cols-7 gap-2">
+            {navigationItems.map((item) => (
+              <NavLink
+                key={item.label}
+                to={item.to}
+                className={({ isActive }) =>
+                  [
+                    'flex min-h-14 items-center justify-center rounded-2xl px-3 text-xs font-medium transition',
+                    isActive
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                  ].join(' ')
+                }
+              >
+                {item.shortLabel}
+              </NavLink>
+            ))}
           </div>
         </PageContainer>
       </nav>

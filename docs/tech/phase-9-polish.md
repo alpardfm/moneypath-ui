@@ -18,6 +18,12 @@ Scope polishing saat ini:
 - halaman wallet, debt, mutasi, profil, login, register, dan not-found dirapikan copy-nya
 - beberapa istilah teknis seperti `Debt linked`, `Delete`, `Page`, `Prev`, `Next`, dan `Balance` diganti ke bentuk UI yang lebih natural
 - detail mutasi sekarang menampilkan label aksi debt yang lebih mudah dipahami daripada nilai mentah backend
+- guard auth publik dan privat sekarang sama-sama menunggu status sesi siap sebelum melakukan redirect
+- error handling service sekarang memakai helper bersama, dan parsing response API dibuat lebih aman untuk empty response atau nested backend error
+- banner sukses berulang di beberapa halaman dirapikan ke komponen bersama agar tampilan dan spacing-nya konsisten
+- header halaman utama seperti dashboard, wallet, debt, mutasi, ringkasan, dan profil sekarang memakai pola shared header agar ritme spacing dan ukuran judul lebih konsisten
+- cabang navigasi yang sudah tidak dipakai lagi dibersihkan dari app shell untuk mengurangi dead code ringan
+- density card di mobile diringankan sedikit, dan beberapa halaman detail dipadatkan agar heading, tombol, dan metadata panjang lebih aman di layar kecil
 
 ---
 
@@ -27,6 +33,4 @@ Polishing ini belum mencakup:
 
 - review manual semua flow mayor
 - audit penuh seluruh copy kecil di setiap komponen
-- refactor pengulangan UI yang lebih dalam
 - pembersihan menyeluruh untuk semua dead code
-

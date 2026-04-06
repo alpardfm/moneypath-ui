@@ -3,10 +3,12 @@ import { Link, useLocation } from 'react-router-dom'
 import EmptyState from '../components/feedback/EmptyState.jsx'
 import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
+import SuccessBanner from '../components/feedback/SuccessBanner.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
+import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import DebtForm from '../features/debts/DebtForm.jsx'
-import { createDebt, listDebts } from '../features/debts/debt-service.js'
+import { createDebt, listArchivedDebts, listDebts } from '../features/debts/debt-service.js'
 import { createDebtFormFromItem, getDebtStatusLabel, getDebtStatusTone } from '../features/debts/debt-utils.js'
 import { formatAmount } from '../utils/format-number.js'
 import { sanitizeDigits } from '../utils/sanitize-input.js'
@@ -16,9 +18,12 @@ const initialForm = createDebtFormFromItem()
 function DebtPage() {
   const location = useLocation()
   const [debts, setDebts] = useState([])
+  const [archivedDebts, setArchivedDebts] = useState([])
   const [meta, setMeta] = useState(null)
+  const [archiveMeta, setArchiveMeta] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [archiveErrorMessage, setArchiveErrorMessage] = useState('')
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
   const [formError, setFormError] = useState('')
@@ -29,10 +34,28 @@ function DebtPage() {
     try {
       setIsLoading(true)
       setErrorMessage('')
+      setArchiveErrorMessage('')
 
-      const result = await listDebts({ page: 1, pageSize: 20 })
-      setDebts(result.items)
-      setMeta(result.meta)
+      const [activeResult, archivedResult] = await Promise.allSettled([
+        listDebts({ page: 1, pageSize: 20 }),
+        listArchivedDebts({ page: 1, pageSize: 20 }),
+      ])
+
+      if (activeResult.status !== 'fulfilled') {
+        throw activeResult.reason
+      }
+
+      if (archivedResult.status === 'fulfilled') {
+        setArchivedDebts(archivedResult.value.items)
+        setArchiveMeta(archivedResult.value.meta)
+      } else {
+        setArchivedDebts([])
+        setArchiveMeta(null)
+        setArchiveErrorMessage(archivedResult.reason?.message || 'Gagal memuat arsip debt.')
+      }
+
+      setDebts(activeResult.value.items)
+      setMeta(activeResult.value.meta)
     } catch (error) {
       setErrorMessage(error.message || 'Gagal memuat debt.')
     } finally {
@@ -116,20 +139,11 @@ function DebtPage() {
 
   return (
     <PageContainer className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-slate-500">Debt</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          Daftar debt.
-        </h1>
-      </div>
+      <PageHeader eyebrow="Debt" title="Daftar debt." />
 
       {formError ? <ErrorState title="Aksi debt gagal" message={formError} /> : null}
 
-      {formSuccess ? (
-        <SectionCard tone="subtle" className="border-emerald-200 bg-emerald-50">
-          <p className="text-sm text-emerald-800">{formSuccess}</p>
-        </SectionCard>
-      ) : null}
+      <SuccessBanner message={formSuccess} />
 
       <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <section className="space-y-4">
@@ -194,6 +208,50 @@ function DebtPage() {
               </div>
             </>
           )}
+
+          <SectionCard className="space-y-4">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-slate-500">Arsip debt</p>
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+                {archiveMeta?.total_items || archivedDebts.length} debt nonaktif
+              </h2>
+            </div>
+
+            {archiveErrorMessage ? (
+              <ErrorState
+                title="Arsip debt belum bisa dimuat"
+                message={archiveErrorMessage}
+                actionLabel="Coba lagi"
+                onAction={loadDebts}
+              />
+            ) : archivedDebts.length === 0 ? (
+              <EmptyState
+                title="Belum ada debt arsip"
+                message="Debt yang sudah dinonaktifkan akan tampil di bagian ini."
+              />
+            ) : (
+              <div className="space-y-3">
+                {archivedDebts.map((debt) => (
+                  <div
+                    key={debt.id}
+                    className="rounded-2xl bg-slate-50 px-4 py-3"
+                  >
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-slate-900">{debt.name}</p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          Pokok: {formatAmount(debt.principal_amount)}
+                        </p>
+                      </div>
+                      <span className="inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-600">
+                        {getDebtStatusLabel(debt.status)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </SectionCard>
         </section>
 
         <DebtForm

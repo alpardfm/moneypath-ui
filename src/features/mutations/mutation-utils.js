@@ -57,6 +57,7 @@ export function createMutationFilterState() {
   return {
     type: '',
     walletId: '',
+    categoryId: '',
     debtId: '',
     relatedToDebt: '',
     from: '',

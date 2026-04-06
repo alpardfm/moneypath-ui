@@ -23,7 +23,7 @@ function ProtectedRoute({ children }) {
         to="/login"
         replace
         state={{
-          from: `${location.pathname}${location.search}`,
+          from: `${location.pathname}${location.search}${location.hash}`,
           message: 'Sesi kamu sudah berakhir. Silakan masuk lagi.',
         }}
       />

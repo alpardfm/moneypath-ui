@@ -1,12 +1,5 @@
 import { api } from '../../services/api.js'
-import { extractApiMessage } from '../../utils/api-message.js'
-
-function createSummaryError(error, fallbackMessage) {
-  const summaryError = new Error(extractApiMessage(error?.payload, fallbackMessage))
-  summaryError.status = error?.status
-  summaryError.payload = error?.payload
-  return summaryError
-}
+import { createServiceError } from '../../utils/service-error.js'
 
 export async function getSummaryReport(filters = {}) {
   const query = new URLSearchParams()
@@ -25,6 +18,6 @@ export async function getSummaryReport(filters = {}) {
     const payload = await api.get(`/summary${suffix}`)
     return payload?.data || null
   } catch (error) {
-    throw createSummaryError(error, 'Gagal memuat ringkasan.')
+    throw createServiceError(error, 'Gagal memuat ringkasan.')
   }
 }

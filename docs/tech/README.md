@@ -26,3 +26,5 @@ Dokumen di folder ini fokus ke hal yang sudah benar-benar ada di codebase, supay
   Ringkasan profile module MVP: ambil profil saat ini, update data akun, ganti password, dan feedback yang sederhana.
 - `phase-9-polish.md`  
   Ringkasan polishing awal: konsistensi copy Bahasa Indonesia, label status yang lebih rapi, dan perbaikan friksi kecil di UI.
+- `phase-10-dashboard-sync.md`  
+  Ringkasan slice awal Phase 10: sinkronisasi dashboard dengan tren bulanan dan breakdown kategori pengeluaran dari backend terbaru.
