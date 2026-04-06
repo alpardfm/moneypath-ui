@@ -16,10 +16,10 @@ function FormField({
   className = '',
 }) {
   const hasOptions = Array.isArray(options) && options.length > 0
-  const isDateField = type === 'date'
+  const isWrappedDateField = ['date', 'datetime-local'].includes(type)
   const fieldClassName = [
     'block w-full min-w-0 max-w-full bg-white px-4 py-3 text-sm text-slate-900 outline-none transition',
-    isDateField ? 'appearance-none border-0 rounded-none shadow-none' : 'rounded-2xl border',
+    isWrappedDateField ? 'appearance-none border-0 rounded-none shadow-none' : 'rounded-2xl border',
     error
       ? 'border-rose-300 ring-2 ring-rose-100'
       : 'border-slate-200 focus:border-slate-400 focus:ring-2 focus:ring-slate-200',
@@ -57,7 +57,7 @@ function FormField({
         </select>
       ) : (
         <>
-          {isDateField ? (
+          {isWrappedDateField ? (
             <div className={dateFieldWrapperClassName}>
               <input
                 id={id}
