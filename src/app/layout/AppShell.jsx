@@ -1,19 +1,20 @@
-import { Link, NavLink, Outlet } from 'react-router-dom'
-import { useAuth } from '../providers/useAuth.jsx'
-import PageContainer from '../../components/layout/PageContainer.jsx'
+import { Link, NavLink, Outlet } from "react-router-dom";
+import { useAuth } from "../providers/useAuth.jsx";
+import PageContainer from "../../components/layout/PageContainer.jsx";
 
 const navigationItems = [
-  { label: 'Dashboard', shortLabel: 'Beranda', to: '/app/dashboard' },
-  { label: 'Wallet', shortLabel: 'Wallet', to: '/app/wallets' },
-  { label: 'Debt', shortLabel: 'Debt', to: '/app/debts' },
-  { label: 'Mutasi', shortLabel: 'Mutasi', to: '/app/mutations' },
-  { label: 'Notifikasi', shortLabel: 'Notif', to: '/app/notifications' },
-  { label: 'Ringkasan', shortLabel: 'Ringkas', to: '/app/summary' },
-  { label: 'Profil', shortLabel: 'Profil', to: '/app/profile' },
-]
+  { label: "Dashboard", shortLabel: "Beranda", to: "/app/dashboard" },
+  { label: "Wallet", shortLabel: "Wallet", to: "/app/wallets" },
+  { label: "Debt", shortLabel: "Debt", to: "/app/debts" },
+  { label: "Mutasi", shortLabel: "Mutasi", to: "/app/mutations" },
+  { label: "Recurring", shortLabel: "Jadwal", to: "/app/recurring" },
+  { label: "Notifikasi", shortLabel: "Notif", to: "/app/notifications" },
+  { label: "Ringkasan", shortLabel: "Ringkas", to: "/app/summary" },
+  { label: "Profil", shortLabel: "Profil", to: "/app/profile" },
+];
 
 function AppShell() {
-  const { logout } = useAuth()
+  const { logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
@@ -23,7 +24,10 @@ function AppShell() {
         <PageContainer className="flex flex-col gap-4 py-4">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <Link to="/app/dashboard" className="text-lg font-semibold tracking-tight text-slate-900">
+              <Link
+                to="/app/dashboard"
+                className="text-lg font-semibold tracking-tight text-slate-900"
+              >
                 Moneypath
               </Link>
             </div>
@@ -44,11 +48,11 @@ function AppShell() {
                 to={item.to}
                 className={({ isActive }) =>
                   [
-                    'rounded-full px-4 py-2 text-sm font-medium transition',
+                    "rounded-full px-4 py-2 text-sm font-medium transition",
                     isActive
-                      ? 'bg-slate-900 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
-                  ].join(' ')
+                      ? "bg-slate-900 text-white"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200",
+                  ].join(" ")
                 }
               >
                 {item.label}
@@ -64,18 +68,18 @@ function AppShell() {
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur md:hidden">
         <PageContainer className="px-0" size="app">
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {navigationItems.map((item) => (
               <NavLink
                 key={item.label}
                 to={item.to}
                 className={({ isActive }) =>
                   [
-                    'flex min-h-14 items-center justify-center rounded-2xl px-3 text-xs font-medium transition',
+                    "flex min-h-14 items-center justify-center rounded-2xl px-3 text-xs font-medium transition",
                     isActive
-                      ? 'bg-slate-900 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
-                  ].join(' ')
+                      ? "bg-slate-900 text-white"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200",
+                  ].join(" ")
                 }
               >
                 {item.shortLabel}
@@ -87,7 +91,7 @@ function AppShell() {
 
       <div className="h-24 md:hidden" aria-hidden="true" />
     </div>
-  )
+  );
 }
 
-export default AppShell
+export default AppShell;

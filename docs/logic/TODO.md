@@ -3,6 +3,7 @@
 This file defines the phased task list for building `moneypath-ui`.
 
 Frontend direction:
+
 - React JS
 - Vite
 - Tailwind CSS
@@ -15,9 +16,11 @@ Frontend direction:
 # Phase 0 — Project Setup
 
 ## Goal
+
 Prepare a clean frontend foundation.
 
 ## Tasks
+
 - [x] initialize React + Vite project
 - [x] install Tailwind CSS
 - [x] setup base folder structure
@@ -31,6 +34,7 @@ Prepare a clean frontend foundation.
 - [x] setup basic eslint / formatting config
 
 ## Output
+
 - app runs locally
 - routing works
 - base layout exists
@@ -41,9 +45,11 @@ Prepare a clean frontend foundation.
 # Phase 1 — App Shell & Responsive Layout
 
 ## Goal
+
 Create the main layout system for desktop and mobile.
 
 ## Tasks
+
 - [x] create app shell
 - [x] create responsive header
 - [x] create mobile-friendly navigation
@@ -56,6 +62,7 @@ Create the main layout system for desktop and mobile.
 - [x] verify layout on desktop and mobile widths
 
 ## Output
+
 - consistent layout foundation
 - mobile responsiveness starts working early
 
@@ -64,9 +71,11 @@ Create the main layout system for desktop and mobile.
 # Phase 2 — Auth Flow
 
 ## Goal
+
 Allow user to register, login, and enter protected pages.
 
 ## Tasks
+
 - [x] create register page
 - [x] create login page
 - [x] connect register API
@@ -79,6 +88,7 @@ Allow user to register, login, and enter protected pages.
 - [x] redirect user correctly after auth
 
 ## Output
+
 - auth flow works end-to-end
 
 ---
@@ -86,9 +96,11 @@ Allow user to register, login, and enter protected pages.
 # Phase 3 — Dashboard
 
 ## Goal
+
 Show the first useful overview after login.
 
 ## Tasks
+
 - [x] create dashboard page
 - [x] fetch dashboard API
 - [x] display total assets
@@ -100,6 +112,7 @@ Show the first useful overview after login.
 - [x] optimize layout for mobile readability
 
 ## Output
+
 - dashboard is usable and readable
 
 ---
@@ -107,14 +120,17 @@ Show the first useful overview after login.
 # Phase 4 — Wallet Module
 
 ## Goal
+
 Allow user to manage wallets.
 
 ## Notes
+
 - wallet detail page was added to make edit flow and wallet history easier to understand
 - wallet detail now shows related mutation history filtered by `wallet_id`
 - wallet list action was clarified so it points to detail instead of relying on an ambiguous inline edit flow
 
 ## Tasks
+
 - [x] create wallet list page
 - [x] create add wallet page or modal
 - [x] create edit wallet page or modal
@@ -127,6 +143,7 @@ Allow user to manage wallets.
 - [x] handle validation and API errors
 
 ## Output
+
 - wallet flow works end-to-end
 
 ---
@@ -134,14 +151,17 @@ Allow user to manage wallets.
 # Phase 5 — Debt Module
 
 ## Goal
+
 Allow user to manage debts clearly.
 
 ## Notes
+
 - debt detail now shows related mutation history filtered by `debt_id`
 - money amount inputs in debt flow were tightened to numeric-only input in the UI
 - debt detail is intended to reduce context switching before opening the mutation module
 
 ## Tasks
+
 - [x] create debt list page
 - [x] create add debt page
 - [x] create debt detail page
@@ -156,6 +176,7 @@ Allow user to manage debts clearly.
 - [x] ensure debt UI remains readable on mobile
 
 ## Output
+
 - debt flow works end-to-end
 
 ---
@@ -163,15 +184,18 @@ Allow user to manage debts clearly.
 # Phase 6 — Mutation Module
 
 ## Goal
+
 Build the main money movement flow.
 
 ## Notes
+
 - happened at on create mutation defaults to the current local date and time, but remains editable
 - money amount inputs in mutation flow were tightened to numeric-only input in the UI
 - optional list query handling was refined so unsupported values like `related_to_debt=undefined` are not sent to the API
 - backend error envelopes with nested `error.message` are surfaced more clearly in the UI
 
 ## Tasks
+
 - [x] create mutation list page
 - [x] create add mutation page
 - [x] create edit mutation page
@@ -188,6 +212,7 @@ Build the main money movement flow.
 - [x] optimize mutation form for mobile usage
 
 ## Output
+
 - mutation flow works
 - debt-related mutation flow works
 
@@ -196,13 +221,16 @@ Build the main money movement flow.
 # Phase 7 — Summary Module
 
 ## Goal
+
 Show a simple summary page.
 
 ## Notes
+
 - date range filtering belongs here instead of the MVP dashboard
 - dashboard should stay as a quick overview unless later product direction changes
 
 ## Tasks
+
 - [x] create summary page
 - [x] connect summary API
 - [x] add date range input
@@ -215,6 +243,7 @@ Show a simple summary page.
 - [x] ensure summary is readable on mobile
 
 ## Output
+
 - summary page works
 
 ---
@@ -222,9 +251,11 @@ Show a simple summary page.
 # Phase 8 — Profile Module
 
 ## Goal
+
 Allow user to manage profile data.
 
 ## Tasks
+
 - [x] create profile page
 - [x] connect get me API
 - [x] connect update profile API
@@ -234,6 +265,7 @@ Allow user to manage profile data.
 - [x] keep form UX simple and clear
 
 ## Output
+
 - profile flow works
 
 ---
@@ -241,9 +273,11 @@ Allow user to manage profile data.
 # Phase 9 — Polish & Consistency
 
 ## Goal
+
 Make the frontend feel stable and coherent.
 
 ## Notes
+
 - standardize UI copy to full Bahasa Indonesia across the app
 - do not add language switch in MVP unless explicitly requested later
 - CI/CD GitHub Actions was added for lint, build, and SSH deploy to production subpath `/moneypath/`
@@ -255,6 +289,7 @@ Make the frontend feel stable and coherent.
 - dead navigation branches that were no longer used were removed from the app shell to reduce low-value code paths
 
 ## Tasks
+
 - [x] standardize loading states
 - [x] standardize error states
 - [x] standardize empty states
@@ -269,6 +304,7 @@ Make the frontend feel stable and coherent.
 - [x] standardize language usage across labels, buttons, helper text, and page copy
 
 ## Output
+
 - app feels consistent and ready for real use
 
 ---
@@ -276,6 +312,7 @@ Make the frontend feel stable and coherent.
 # Backend Sync Notes
 
 Recent backend changes that FE should now be aware of:
+
 - `GET /dashboard` now returns extra chart-ready fields:
   - `monthly_trend`
   - `outgoing_categories`
@@ -298,9 +335,11 @@ Recent backend changes that FE should now be aware of:
 # Phase 10 — Backend Sync Follow-up
 
 ## Goal
+
 Adapt the UI to the latest backend capabilities that were added after the initial frontend MVP phases.
 
 ## Tasks
+
 - [x] update dashboard page to consume `monthly_trend`
 - [x] add chart component for monthly incoming / outgoing / net flow
 - [x] update dashboard page to consume `outgoing_categories`
@@ -314,11 +353,13 @@ Adapt the UI to the latest backend capabilities that were added after the initia
 - [x] decide where leakage detection insights should appear in UI
 - [x] decide where export/report action should live in summary or mutation pages
 - [x] add category management UI if not already exposed clearly
+- [x] add recurring rules management UI for list, create, run-due, edit, and inactivate flows
 - [x] add settings UI for:
-  preferred currency, timezone, date format, and week start day
+      preferred currency, timezone, date format, and week start day
 - [x] verify API typings/contracts for new backend response fields
 
 ## Output
+
 - frontend fully reflects the latest backend surface
 - dashboard becomes more visual
 - archive and notification flows become usable in UI
@@ -328,6 +369,7 @@ Adapt the UI to the latest backend capabilities that were added after the initia
 # Later Backlog
 
 ## After MVP
+
 - [x] better mutation filtering
 - [x] richer dashboard presentation
 - [ ] consider optional dashboard date range only after summary flow is stable
