@@ -151,6 +151,12 @@ Env yang dipakai:
 VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
+Untuk production Moneypath, base URL yang dipakai sekarang adalah:
+
+```env
+VITE_API_BASE_URL=https://alpardfm.my.id/api/moneypath
+```
+
 Contoh file:
 
 - `.env.example`
