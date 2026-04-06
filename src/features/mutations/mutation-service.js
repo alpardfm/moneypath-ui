@@ -99,6 +99,10 @@ export async function listMutations(filters) {
     query.set('wallet_id', filters.walletId)
   }
 
+  if (filters.categoryId) {
+    query.set('category_id', filters.categoryId)
+  }
+
   if (filters.debtId) {
     query.set('debt_id', filters.debtId)
   }

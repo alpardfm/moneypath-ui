@@ -30,6 +30,10 @@ Dokumen ini mencatat slice awal Phase 10 yang fokus ke sinkronisasi UI dengan en
 - dashboard sekarang menampilkan skor kesehatan keuangan sebagai ringkasan cepat
 - summary sekarang menampilkan leakage detection 30 hari sebagai insight analitis
 - halaman mutasi sekarang punya tombol export CSV yang mengikuti filter aktif
+- filter mutasi sekarang juga mendukung kategori aktif dan tombol atur ulang filter agar pemakaian riwayat lebih cepat
+- halaman profil sekarang menampilkan ringkasan preferensi aktif dan hanya mengaktifkan aksi simpan pengaturan saat memang ada perubahan
+- dashboard sekarang punya blok sorotan cepat untuk snapshot bulan terbaru, kategori pengeluaran terbesar, dan wallet dengan saldo tertinggi
+- workflow deploy sekarang memakai artifact build tunggal, environment produksi, concurrency guard, dan backup release terakhir di server untuk rollback manual cepat
 - halaman mutasi sekarang juga punya section kategori untuk list, tambah, dan nonaktifkan kategori
 
 ## File Utama

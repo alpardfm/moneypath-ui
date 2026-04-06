@@ -328,9 +328,9 @@ Adapt the UI to the latest backend capabilities that were added after the initia
 # Later Backlog
 
 ## After MVP
-- [ ] better mutation filtering
-- [ ] richer dashboard presentation
+- [x] better mutation filtering
+- [x] richer dashboard presentation
 - [ ] consider optional dashboard date range only after summary flow is stable
 - [ ] consider bilingual support only after full copy consistency is finished
-- [ ] harden deployment workflow with environment protection, zero-downtime strategy, and rollback plan
-- [ ] advanced settings polish beyond current backend settings scope
+- [x] harden deployment workflow with environment protection, zero-downtime strategy, and rollback plan
+- [x] advanced settings polish beyond current backend settings scope

@@ -16,6 +16,10 @@ env:
   DEPLOY_HOST: 103.87.67.209
   DEPLOY_USER: alpardfm
 
+concurrency:
+  group: moneypath-ui-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality:
     name: Lint dan build
@@ -40,28 +44,24 @@ jobs:
       - name: Run build
         run: npm run build
 
+      - name: Upload build artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+          if-no-files-found: error
+
   deploy:
     name: Deploy ke server
     needs: quality
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    environment:
+      name: production
+      url: https://alpardfm.my.id/moneypath
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build production assets
-        run: npm run build
-
       - name: Validate deploy secrets
         env:
           DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
@@ -69,6 +69,12 @@ jobs:
         run: |
           test -n "$DEPLOY_SSH_PRIVATE_KEY" || (echo "Secret DEPLOY_SSH_PRIVATE_KEY belum diisi." && exit 1)
           test -n "$DEPLOY_PATH" || (echo "Secret DEPLOY_PATH belum diisi." && exit 1)
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: dist
 
       - name: Configure SSH
         env:
@@ -87,6 +93,19 @@ jobs:
           ssh "$DEPLOY_USER@$DEPLOY_HOST" "\
             test -d '$DEPLOY_PATH' || (echo 'Path deploy belum ada: $DEPLOY_PATH' && exit 1); \
             test -w '$DEPLOY_PATH' || (echo 'Path deploy tidak writable untuk user deploy: $DEPLOY_PATH' && exit 1)"
+
+      - name: Backup current release
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "\
+            mkdir -p '$DEPLOY_PATH/.backups'; \
+            if [ -n \"\$(find '$DEPLOY_PATH' -mindepth 1 -maxdepth 1 ! -name '.backups' -print -quit)\" ]; then \
+              BACKUP_DIR='$DEPLOY_PATH/.backups/\$(date +%Y%m%d-%H%M%S)'; \
+              mkdir -p \"\$BACKUP_DIR\"; \
+              find '$DEPLOY_PATH' -mindepth 1 -maxdepth 1 ! -name '.backups' -exec cp -a {} \"\$BACKUP_DIR\" \;; \
+              find '$DEPLOY_PATH/.backups' -mindepth 1 -maxdepth 1 -type d | sort | head -n -5 | xargs -r rm -rf; \
+            fi"
 
       - name: Sync dist to server
         env:

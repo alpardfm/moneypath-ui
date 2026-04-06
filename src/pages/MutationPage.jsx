@@ -45,6 +45,7 @@ function MutationPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const [filters, setFilters] = useState(createMutationFilterState())
   const [walletOptions, setWalletOptions] = useState([{ value: '', label: 'Pilih wallet' }])
+  const [categoryOptions, setCategoryOptions] = useState([{ value: '', label: 'Semua kategori' }])
   const [debtOptions, setDebtOptions] = useState([{ value: '', label: 'Pilih debt' }])
   const [categories, setCategories] = useState([])
   const [categoryMeta, setCategoryMeta] = useState(null)
@@ -63,9 +64,10 @@ function MutationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const loadDependencies = useCallback(async () => {
-    const [walletResult, debtResult] = await Promise.all([
+    const [walletResult, debtResult, categoryResult] = await Promise.all([
       listWallets({ page: 1, pageSize: 100 }),
       listDebts({ page: 1, pageSize: 100 }),
+      listCategories({ page: 1, pageSize: 100 }),
     ])
 
     setWalletOptions([
@@ -81,6 +83,14 @@ function MutationPage() {
       ...debtResult.items.map((debt) => ({
         value: debt.id,
         label: `${debt.name} - sisa ${formatAmount(debt.remaining_amount)}`,
+      })),
+    ])
+
+    setCategoryOptions([
+      { value: '', label: 'Semua kategori' },
+      ...categoryResult.items.map((category) => ({
+        value: category.id,
+        label: `${category.name} (${getCategoryTypeLabel(category.type)})`,
       })),
     ])
   }, [])
@@ -197,6 +207,10 @@ function MutationPage() {
       ...currentFilters,
       page: nextPage,
     }))
+  }
+
+  const handleResetFilters = () => {
+    setFilters(createMutationFilterState())
   }
 
   const handleCategoryFormChange = (event) => {
@@ -403,18 +417,28 @@ function MutationPage() {
               Saring riwayat mutasi
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={handleExport}
-            disabled={isExporting}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400 sm:w-auto"
-          >
-            {isExporting ? 'Mengekspor...' : 'Export CSV'}
-          </button>
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:w-auto"
+            >
+              Atur ulang filter
+            </button>
+            <button
+              type="button"
+              onClick={handleExport}
+              disabled={isExporting}
+              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400 sm:w-auto"
+            >
+              {isExporting ? 'Mengekspor...' : 'Export CSV'}
+            </button>
+          </div>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <FormField id="type" label="Tipe" value={filters.type} onChange={handleFilterChange} options={mutationTypeOptions} />
           <FormField id="walletId" label="Wallet" value={filters.walletId} onChange={handleFilterChange} options={walletOptions} />
+          <FormField id="categoryId" label="Kategori" value={filters.categoryId} onChange={handleFilterChange} options={categoryOptions} />
           <FormField id="debtId" label="Debt" value={filters.debtId} onChange={handleFilterChange} options={debtOptions} />
           <FormField
             id="relatedToDebt"

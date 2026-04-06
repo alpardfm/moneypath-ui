@@ -9,6 +9,11 @@ import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import { getDashboardOverview } from '../features/dashboard/dashboard-service.js'
 import {
+  formatMonthLabel,
+  getLargestWallet,
+  getLatestTrendItem,
+  getNetFlowSummary,
+  getTopOutgoingCategory,
   normalizeMonthlyTrend,
   normalizeOutgoingCategories,
 } from '../features/dashboard/dashboard-utils.js'
@@ -129,6 +134,10 @@ function DashboardPage() {
 
   const monthlyTrend = normalizeMonthlyTrend(dashboard.monthly_trend)
   const outgoingCategories = normalizeOutgoingCategories(dashboard.outgoing_categories)
+  const latestTrend = getLatestTrendItem(monthlyTrend)
+  const topOutgoingCategory = getTopOutgoingCategory(outgoingCategories)
+  const largestWallet = getLargestWallet(dashboard.wallets)
+  const netFlowSummary = getNetFlowSummary(dashboard.net_flow)
 
   return (
     <PageContainer className="space-y-6">
@@ -162,6 +171,18 @@ function DashboardPage() {
               {dashboard.wallets?.length || 0} wallet aktif
             </span>
           </div>
+          <div className="flex flex-wrap gap-2">
+            <span
+              className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${netFlowSummary.tone}`}
+            >
+              {netFlowSummary.label}
+            </span>
+            {latestTrend ? (
+              <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
+                Snapshot {formatMonthLabel(latestTrend.month)}
+              </span>
+            ) : null}
+          </div>
         </SectionCard>
 
         {dashboard.wallets?.length ? (
@@ -192,6 +213,67 @@ function DashboardPage() {
             message="Saat wallet pertama dibuat, daftar saldo wallet akan muncul di dashboard ini."
           />
         )}
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <SectionCard className="space-y-2">
+          <p className="text-sm font-medium text-slate-500">Bulan terbaru</p>
+          {latestTrend ? (
+            <>
+              <p className="text-xl font-semibold tracking-tight text-slate-900">
+                {formatMonthLabel(latestTrend.month)}
+              </p>
+              <p className="text-sm text-slate-600">
+                Masuk {formatAmount(latestTrend.totalIncoming)} dan keluar {formatAmount(latestTrend.totalOutgoing)}.
+              </p>
+              <span
+                className={`inline-flex w-fit rounded-full px-3 py-1 text-sm font-medium ${getNetFlowSummary(latestTrend.netFlow).tone}`}
+              >
+                Arus bersih {formatAmount(latestTrend.netFlow)}
+              </span>
+            </>
+          ) : (
+            <p className="text-sm text-slate-500">Belum ada data tren bulanan.</p>
+          )}
+        </SectionCard>
+
+        <SectionCard className="space-y-2">
+          <p className="text-sm font-medium text-slate-500">Pengeluaran terbesar</p>
+          {topOutgoingCategory ? (
+            <>
+              <p className="text-xl font-semibold tracking-tight text-slate-900">
+                {topOutgoingCategory.categoryName}
+              </p>
+              <p className="text-sm text-slate-600">
+                Menyumbang {topOutgoingCategory.share.toFixed(1)}% dari total pengeluaran periode ini.
+              </p>
+              <span className="inline-flex w-fit rounded-full bg-rose-50 px-3 py-1 text-sm font-medium text-rose-700">
+                {formatAmount(topOutgoingCategory.totalAmount)}
+              </span>
+            </>
+          ) : (
+            <p className="text-sm text-slate-500">Belum ada kategori pengeluaran yang bisa disorot.</p>
+          )}
+        </SectionCard>
+
+        <SectionCard className="space-y-2">
+          <p className="text-sm font-medium text-slate-500">Wallet terkuat</p>
+          {largestWallet ? (
+            <>
+              <p className="text-xl font-semibold tracking-tight text-slate-900">
+                {largestWallet.name}
+              </p>
+              <p className="text-sm text-slate-600">
+                Saldo paling besar di antara wallet aktif saat ini.
+              </p>
+              <span className="inline-flex w-fit rounded-full bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">
+                {formatAmount(largestWallet.balance)}
+              </span>
+            </>
+          ) : (
+            <p className="text-sm text-slate-500">Belum ada wallet aktif yang bisa dibandingkan.</p>
+          )}
+        </SectionCard>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">

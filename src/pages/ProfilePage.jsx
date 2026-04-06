@@ -13,9 +13,14 @@ import {
 } from '../features/profile/profile-service.js'
 import { createPasswordForm, createProfileFormFromItem } from '../features/profile/profile-utils.js'
 import {
+  areSettingsFormsEqual,
   createSettingsFormFromItem,
   currencyOptions,
   dateFormatOptions,
+  getCurrencyLabel,
+  getDateFormatLabel,
+  getTimezoneLabel,
+  getWeekStartDayLabel,
   timezoneOptions,
   weekStartDayOptions,
 } from '../features/settings/settings-utils.js'
@@ -41,6 +46,8 @@ function ProfilePage() {
   const [isSavingProfile, setIsSavingProfile] = useState(false)
   const [isSavingSettings, setIsSavingSettings] = useState(false)
   const [isSavingPassword, setIsSavingPassword] = useState(false)
+  const savedSettingsForm = createSettingsFormFromItem(settings)
+  const hasSettingsChanges = !areSettingsFormsEqual(settingsForm, savedSettingsForm)
 
   const loadProfile = useCallback(async () => {
     try {
@@ -343,6 +350,36 @@ function ProfilePage() {
           {settingsError ? <ErrorState title="Perubahan pengaturan gagal" message={settingsError} /> : null}
           <SuccessBanner message={settingsSuccess} />
 
+          <SectionCard tone="subtle" className="space-y-3">
+            <p className="text-sm font-medium text-slate-500">Preferensi aktif</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl bg-white px-4 py-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Mata uang</p>
+                <p className="mt-1 text-sm font-medium text-slate-900">
+                  {getCurrencyLabel(settingsForm.preferredCurrency)}
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white px-4 py-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Timezone</p>
+                <p className="mt-1 text-sm font-medium text-slate-900">
+                  {getTimezoneLabel(settingsForm.timezone)}
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white px-4 py-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Format tanggal</p>
+                <p className="mt-1 text-sm font-medium text-slate-900">
+                  {getDateFormatLabel(settingsForm.dateFormat)}
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white px-4 py-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Awal minggu</p>
+                <p className="mt-1 text-sm font-medium text-slate-900">
+                  {getWeekStartDayLabel(settingsForm.weekStartDay)}
+                </p>
+              </div>
+            </div>
+          </SectionCard>
+
           <form className="space-y-4" onSubmit={handleSettingsSubmit}>
             <FormField
               id="preferredCurrency"
@@ -380,17 +417,18 @@ function ProfilePage() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="submit"
-                disabled={isSavingSettings}
+                disabled={isSavingSettings || !hasSettingsChanges}
                 className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:bg-slate-400 sm:w-auto"
               >
-                {isSavingSettings ? 'Menyimpan...' : 'Simpan pengaturan'}
+                {isSavingSettings ? 'Menyimpan...' : hasSettingsChanges ? 'Simpan pengaturan' : 'Belum ada perubahan'}
               </button>
               <button
                 type="button"
                 onClick={handleResetSettings}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:w-auto"
+                disabled={!hasSettingsChanges}
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 sm:w-auto"
               >
-                Atur ulang form
+                Kembalikan perubahan
               </button>
             </div>
           </form>

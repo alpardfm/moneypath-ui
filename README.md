@@ -226,7 +226,14 @@ Deploy otomatis sudah disiapkan lewat GitHub Actions.
 
 Alur:
 - `pull_request` ke `master`: menjalankan lint dan build
-- `push` ke `master`: menjalankan lint, build, lalu deploy via SSH
+- `push` ke `master`: menjalankan lint dan build sekali, simpan artifact, lalu deploy via SSH
+
+Hardening yang sudah ditambahkan:
+- deploy job memakai `environment: production`
+- deploy memakai artifact hasil build dari job quality, jadi tidak build ulang
+- deploy memakai `concurrency` agar deploy lama dibatalkan saat ada push baru
+- release aktif dibackup dulu di server sebelum `rsync`
+- backup lama dibatasi agar tidak menumpuk terus
 
 Target deploy:
 - host: `103.87.67.209`
@@ -238,6 +245,12 @@ File workflow:
 - `.github/workflows/ci-cd.yml`
 
 GitHub Secrets yang wajib diisi:
+- `DEPLOY_SSH_PRIVATE_KEY`
+- `DEPLOY_PATH`
+
+Catatan rollback manual:
+- backup otomatis disimpan di `DEPLOY_PATH/.backups`
+- jika deploy terbaru bermasalah, isi backup terakhir bisa disalin kembali ke path deploy aktif dari server
 - `DEPLOY_SSH_PRIVATE_KEY`
   Isi private key dari `~/.ssh/id_ed25519`
 - `DEPLOY_PATH`
