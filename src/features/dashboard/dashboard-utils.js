@@ -3,12 +3,16 @@ function toNumericValue(value) {
   return Number.isFinite(parsed) ? parsed : 0
 }
 
+function toArray(value) {
+  return Array.isArray(value) ? value : []
+}
+
 function compareMonthValue(left, right) {
   return String(left?.month || '').localeCompare(String(right?.month || ''))
 }
 
 export function normalizeMonthlyTrend(items = []) {
-  return items.map((item) => ({
+  return toArray(items).map((item) => ({
     month: item?.month || '',
     totalIncoming: toNumericValue(item?.total_incoming),
     totalOutgoing: toNumericValue(item?.total_outgoing),
@@ -17,7 +21,7 @@ export function normalizeMonthlyTrend(items = []) {
 }
 
 export function normalizeOutgoingCategories(items = []) {
-  return items.map((item) => ({
+  return toArray(items).map((item) => ({
     categoryId: item?.category_id || '',
     categoryName: item?.category_name || 'Tanpa kategori',
     totalAmount: toNumericValue(item?.total_amount),
@@ -43,7 +47,7 @@ export function formatMonthLabel(value) {
 }
 
 export function getTrendChartMax(items = []) {
-  const values = items.flatMap((item) => [
+  const values = toArray(items).flatMap((item) => [
     item.totalIncoming,
     item.totalOutgoing,
     Math.abs(item.netFlow),
@@ -54,32 +58,38 @@ export function getTrendChartMax(items = []) {
 }
 
 export function getCategoryChartMax(items = []) {
-  const maxValue = Math.max(...items.map((item) => item.totalAmount), 0)
+  const maxValue = Math.max(...toArray(items).map((item) => item.totalAmount), 0)
   return maxValue > 0 ? maxValue : 1
 }
 
 export function getLatestTrendItem(items = []) {
-  if (!items.length) {
+  const normalizedItems = toArray(items)
+
+  if (!normalizedItems.length) {
     return null
   }
 
-  return [...items].sort(compareMonthValue).at(-1) || null
+  return [...normalizedItems].sort(compareMonthValue).at(-1) || null
 }
 
 export function getTopOutgoingCategory(items = []) {
-  if (!items.length) {
+  const normalizedItems = toArray(items)
+
+  if (!normalizedItems.length) {
     return null
   }
 
-  return [...items].sort((left, right) => right.totalAmount - left.totalAmount)[0] || null
+  return [...normalizedItems].sort((left, right) => right.totalAmount - left.totalAmount)[0] || null
 }
 
 export function getLargestWallet(wallets = []) {
-  if (!wallets.length) {
+  const normalizedWallets = toArray(wallets)
+
+  if (!normalizedWallets.length) {
     return null
   }
 
-  return [...wallets]
+  return [...normalizedWallets]
     .map((wallet) => ({
       ...wallet,
       numericBalance: toNumericValue(wallet?.balance),
