@@ -9,6 +9,7 @@ import LoginPage from '../pages/LoginPage.jsx'
 import MutationEditPage from '../pages/MutationEditPage.jsx'
 import MutationPage from '../pages/MutationPage.jsx'
 import NotFoundPage from '../pages/NotFoundPage.jsx'
+import NotificationsPage from '../pages/NotificationsPage.jsx'
 import ProfilePage from '../pages/ProfilePage.jsx'
 import RegisterPage from '../pages/RegisterPage.jsx'
 import SummaryPage from '../pages/SummaryPage.jsx'
@@ -80,6 +81,10 @@ export const router = createBrowserRouter(
         {
           path: 'profile',
           element: <ProfilePage />,
+        },
+        {
+          path: 'notifications',
+          element: <NotificationsPage />,
         },
         {
           path: 'mutations/:mutationId',

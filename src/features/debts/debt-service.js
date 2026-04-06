@@ -79,6 +79,26 @@ export async function listDebts(params = {}) {
   }
 }
 
+export async function listArchivedDebts(params = {}) {
+  const query = new URLSearchParams()
+
+  if (params.page) {
+    query.set('page', String(params.page))
+  }
+
+  if (params.pageSize) {
+    query.set('page_size', String(params.pageSize))
+  }
+
+  const suffix = query.toString() ? `?${query.toString()}` : ''
+  const payload = await api.get(`/debts/archive${suffix}`)
+
+  return {
+    items: payload?.data || [],
+    meta: payload?.meta || null,
+  }
+}
+
 export async function getDebtById(debtID) {
   const payload = await api.get(`/debts/${debtID}`)
   return payload?.data || null

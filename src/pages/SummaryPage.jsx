@@ -6,6 +6,11 @@ import FormField from '../components/forms/FormField.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
+import { getLeakageReport } from '../features/leakage/leakage-service.js'
+import {
+  getLeakageSeverityLabel,
+  getLeakageSeverityTone,
+} from '../features/leakage/leakage-utils.js'
 import { getSummaryReport } from '../features/summary/summary-service.js'
 import {
   createSummaryFilterState,
@@ -43,17 +48,37 @@ const metricCards = [
 
 function SummaryPage() {
   const [summary, setSummary] = useState(null)
+  const [leakageReport, setLeakageReport] = useState(null)
   const [filters, setFilters] = useState(() => createSummaryFilterState())
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [leakageErrorMessage, setLeakageErrorMessage] = useState('')
 
   const loadSummary = useCallback(async (nextFilters) => {
     try {
       setIsLoading(true)
       setErrorMessage('')
+      setLeakageErrorMessage('')
 
-      const report = await getSummaryReport(nextFilters)
-      setSummary(report)
+      const [summaryResult, leakageResult] = await Promise.allSettled([
+        getSummaryReport(nextFilters),
+        getLeakageReport(30),
+      ])
+
+      if (summaryResult.status !== 'fulfilled') {
+        throw summaryResult.reason
+      }
+
+      setSummary(summaryResult.value)
+
+      if (leakageResult.status === 'fulfilled') {
+        setLeakageReport(leakageResult.value)
+      } else {
+        setLeakageReport(null)
+        setLeakageErrorMessage(
+          leakageResult.reason?.message || 'Insight kebocoran belum bisa dimuat.',
+        )
+      }
     } catch (error) {
       setErrorMessage(error.message || 'Gagal memuat ringkasan.')
     } finally {
@@ -225,6 +250,78 @@ function SummaryPage() {
               />
             )}
           </div>
+
+          <SectionCard className="space-y-4">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-slate-500">Insight pengeluaran</p>
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+                Leakage detection 30 hari
+              </h2>
+            </div>
+
+            {leakageErrorMessage ? (
+              <ErrorState
+                title="Insight belum bisa dimuat"
+                message={leakageErrorMessage}
+                actionLabel="Coba lagi"
+                onAction={() => loadSummary(filters)}
+              />
+            ) : !leakageReport ? (
+              <EmptyState
+                title="Insight belum tersedia"
+                message="Saat data pengeluaran sudah cukup, insight kebocoran akan muncul di sini."
+              />
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-2xl bg-slate-50 px-4 py-4">
+                  <p className="text-sm font-medium text-slate-500">Total keluar {leakageReport.days} hari</p>
+                  <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
+                    {formatAmount(leakageReport.total_outgoing)}
+                  </p>
+                </div>
+
+                {leakageReport.findings?.length ? (
+                  <div className="space-y-3">
+                    {leakageReport.findings.map((item, index) => (
+                      <div key={`${item.type}-${index}`} className="rounded-2xl bg-slate-50 px-4 py-4">
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div className="space-y-2">
+                            <span
+                              className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${getLeakageSeverityTone(item.severity)}`}
+                            >
+                              {getLeakageSeverityLabel(item.severity)}
+                            </span>
+                            <div>
+                              <p className="text-sm font-semibold text-slate-900">{item.title}</p>
+                              <p className="mt-1 text-sm leading-6 text-slate-600">{item.summary}</p>
+                            </div>
+                          </div>
+                          <p className="text-sm font-semibold text-slate-900">
+                            {formatAmount(item.amount)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState
+                    title="Belum ada temuan kuat"
+                    message="Belum ada pola kebocoran pengeluaran yang cukup kuat pada periode ini."
+                  />
+                )}
+
+                {leakageReport.recommendations?.length ? (
+                  <div className="space-y-2">
+                    {leakageReport.recommendations.map((item) => (
+                      <div key={item} className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-700 ring-1 ring-slate-200">
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </SectionCard>
         </>
       )}
     </PageContainer>

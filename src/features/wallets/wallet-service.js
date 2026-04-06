@@ -21,6 +21,26 @@ export async function listWallets(params = {}) {
   }
 }
 
+export async function listArchivedWallets(params = {}) {
+  const query = new URLSearchParams()
+
+  if (params.page) {
+    query.set('page', String(params.page))
+  }
+
+  if (params.pageSize) {
+    query.set('page_size', String(params.pageSize))
+  }
+
+  const suffix = query.toString() ? `?${query.toString()}` : ''
+  const payload = await api.get(`/wallets/archive${suffix}`)
+
+  return {
+    items: payload?.data || [],
+    meta: payload?.meta || null,
+  }
+}
+
 export async function createWallet(input) {
   try {
     const payload = await api.post('/wallets', { name: input.name })

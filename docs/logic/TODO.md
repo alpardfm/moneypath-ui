@@ -301,22 +301,22 @@ Recent backend changes that FE should now be aware of:
 Adapt the UI to the latest backend capabilities that were added after the initial frontend MVP phases.
 
 ## Tasks
-- [ ] update dashboard page to consume `monthly_trend`
-- [ ] add chart component for monthly incoming / outgoing / net flow
-- [ ] update dashboard page to consume `outgoing_categories`
-- [ ] add outgoing category breakdown chart/card
-- [ ] add wallet archive page or archive section using `GET /wallets/archive`
-- [ ] add debt archive page or archive section using `GET /debts/archive`
-- [ ] add notifications page, drawer, or dropdown using `GET /notifications`
-- [ ] show recurring due notifications clearly
-- [ ] show active debt reminder notifications clearly
-- [ ] decide where financial health score should appear in UI
-- [ ] decide where leakage detection insights should appear in UI
-- [ ] decide where export/report action should live in summary or mutation pages
-- [ ] add category management UI if not already exposed clearly
-- [ ] add settings UI for:
+- [x] update dashboard page to consume `monthly_trend`
+- [x] add chart component for monthly incoming / outgoing / net flow
+- [x] update dashboard page to consume `outgoing_categories`
+- [x] add outgoing category breakdown chart/card
+- [x] add wallet archive page or archive section using `GET /wallets/archive`
+- [x] add debt archive page or archive section using `GET /debts/archive`
+- [x] add notifications page, drawer, or dropdown using `GET /notifications`
+- [x] show recurring due notifications clearly
+- [x] show active debt reminder notifications clearly
+- [x] decide where financial health score should appear in UI
+- [x] decide where leakage detection insights should appear in UI
+- [x] decide where export/report action should live in summary or mutation pages
+- [x] add category management UI if not already exposed clearly
+- [x] add settings UI for:
   preferred currency, timezone, date format, and week start day
-- [ ] verify API typings/contracts for new backend response fields
+- [x] verify API typings/contracts for new backend response fields
 
 ## Output
 - frontend fully reflects the latest backend surface

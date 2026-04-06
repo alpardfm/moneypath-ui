@@ -7,6 +7,7 @@ const navigationItems = [
   { label: 'Wallet', shortLabel: 'Wallet', to: '/app/wallets' },
   { label: 'Debt', shortLabel: 'Debt', to: '/app/debts' },
   { label: 'Mutasi', shortLabel: 'Mutasi', to: '/app/mutations' },
+  { label: 'Notifikasi', shortLabel: 'Notif', to: '/app/notifications' },
   { label: 'Ringkasan', shortLabel: 'Ringkas', to: '/app/summary' },
   { label: 'Profil', shortLabel: 'Profil', to: '/app/profile' },
 ]
@@ -63,7 +64,7 @@ function AppShell() {
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur md:hidden">
         <PageContainer className="px-0" size="app">
-          <div className="grid grid-cols-6 gap-2">
+          <div className="grid grid-cols-7 gap-2">
             {navigationItems.map((item) => (
               <NavLink
                 key={item.label}

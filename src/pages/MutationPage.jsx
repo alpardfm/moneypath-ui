@@ -8,6 +8,18 @@ import FormField from '../components/forms/FormField.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
+import {
+  categoryCreateTypeOptions,
+  categoryTypeOptions,
+  getCategoryTypeLabel,
+  getCategoryTypeTone,
+} from '../features/categories/category-utils.js'
+import {
+  createCategory,
+  exportMutationsCsv,
+  inactivateCategory,
+  listCategories,
+} from '../features/categories/category-service.js'
 import { listDebts } from '../features/debts/debt-service.js'
 import MutationForm from '../features/mutations/MutationForm.jsx'
 import { createMutation, listMutations } from '../features/mutations/mutation-service.js'
@@ -34,6 +46,16 @@ function MutationPage() {
   const [filters, setFilters] = useState(createMutationFilterState())
   const [walletOptions, setWalletOptions] = useState([{ value: '', label: 'Pilih wallet' }])
   const [debtOptions, setDebtOptions] = useState([{ value: '', label: 'Pilih debt' }])
+  const [categories, setCategories] = useState([])
+  const [categoryMeta, setCategoryMeta] = useState(null)
+  const [categoryTypeFilter, setCategoryTypeFilter] = useState('')
+  const [categoryForm, setCategoryForm] = useState({ name: '', type: 'keluar' })
+  const [categoryErrors, setCategoryErrors] = useState({})
+  const [categoryError, setCategoryError] = useState('')
+  const [categorySuccess, setCategorySuccess] = useState('')
+  const [isSubmittingCategory, setIsSubmittingCategory] = useState(false)
+  const [inactivatingCategoryId, setInactivatingCategoryId] = useState('')
+  const [isExporting, setIsExporting] = useState(false)
   const [form, setForm] = useState(() => createMutationFormFromItem())
   const [errors, setErrors] = useState({})
   const [formError, setFormError] = useState('')
@@ -63,6 +85,21 @@ function MutationPage() {
     ])
   }, [])
 
+  const loadCategories = useCallback(async () => {
+    try {
+      setCategoryError('')
+      const result = await listCategories({
+        page: 1,
+        pageSize: 50,
+        type: categoryTypeFilter,
+      })
+      setCategories(result.items)
+      setCategoryMeta(result.meta)
+    } catch (error) {
+      setCategoryError(error.message || 'Gagal memuat kategori.')
+    }
+  }, [categoryTypeFilter])
+
   const loadMutations = useCallback(async () => {
     try {
       setIsLoading(true)
@@ -81,6 +118,10 @@ function MutationPage() {
   useEffect(() => {
     loadDependencies()
   }, [loadDependencies])
+
+  useEffect(() => {
+    loadCategories()
+  }, [loadCategories])
 
   useEffect(() => {
     loadMutations()
@@ -158,6 +199,24 @@ function MutationPage() {
     }))
   }
 
+  const handleCategoryFormChange = (event) => {
+    const { name, value } = event.target
+
+    setCategoryForm((currentForm) => ({
+      ...currentForm,
+      [name]: value,
+    }))
+
+    setCategoryErrors((currentErrors) => ({
+      ...currentErrors,
+      [name]: '',
+    }))
+  }
+
+  const handleCategoryFilterChange = (event) => {
+    setCategoryTypeFilter(event.target.value)
+  }
+
   const resetForm = () => {
     setForm(createMutationFormFromItem())
     setErrors({})
@@ -211,6 +270,20 @@ function MutationPage() {
     return nextErrors
   }
 
+  const validateCategoryForm = () => {
+    const nextErrors = {}
+
+    if (!categoryForm.name.trim()) {
+      nextErrors.name = 'Nama kategori wajib diisi.'
+    }
+
+    if (!categoryForm.type) {
+      nextErrors.type = 'Tipe kategori wajib dipilih.'
+    }
+
+    return nextErrors
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
 
@@ -237,6 +310,83 @@ function MutationPage() {
     }
   }
 
+  const handleCategorySubmit = async (event) => {
+    event.preventDefault()
+
+    const nextErrors = validateCategoryForm()
+
+    if (Object.keys(nextErrors).length > 0) {
+      setCategoryErrors(nextErrors)
+      return
+    }
+
+    try {
+      setIsSubmittingCategory(true)
+      setCategoryError('')
+      setCategorySuccess('')
+
+      const createdCategory = await createCategory(categoryForm)
+      if (!categoryTypeFilter || categoryTypeFilter === createdCategory.type) {
+        setCategories((currentItems) => [createdCategory, ...currentItems])
+      }
+      setCategoryMeta((currentMeta) =>
+        currentMeta
+          ? { ...currentMeta, total_items: (currentMeta.total_items || 0) + 1 }
+          : currentMeta,
+      )
+      setCategoryForm({ name: '', type: categoryForm.type })
+      setCategoryErrors({})
+      setCategorySuccess('Kategori baru berhasil dibuat.')
+    } catch (error) {
+      setCategoryError(error.message)
+    } finally {
+      setIsSubmittingCategory(false)
+    }
+  }
+
+  const handleInactivateCategory = async (category) => {
+    try {
+      setInactivatingCategoryId(category.id)
+      setCategoryError('')
+      setCategorySuccess('')
+
+      await inactivateCategory(category.id)
+      setCategories((currentItems) => currentItems.filter((item) => item.id !== category.id))
+      setCategoryMeta((currentMeta) =>
+        currentMeta
+          ? { ...currentMeta, total_items: Math.max((currentMeta.total_items || categories.length) - 1, 0) }
+          : currentMeta,
+      )
+      setCategorySuccess(`Kategori ${category.name} berhasil dinonaktifkan.`)
+    } catch (error) {
+      setCategoryError(error.message)
+    } finally {
+      setInactivatingCategoryId('')
+    }
+  }
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true)
+      setErrorMessage('')
+
+      const result = await exportMutationsCsv(filters)
+      const url = window.URL.createObjectURL(result.blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = result.filename
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      setFormSuccess('Export CSV berhasil diunduh.')
+    } catch (error) {
+      setErrorMessage(error.message || 'Gagal mengekspor mutasi.')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   return (
     <PageContainer className="space-y-6">
       <PageHeader eyebrow="Mutasi" title="Mutasi uang." />
@@ -246,11 +396,21 @@ function MutationPage() {
       <SuccessBanner message={formSuccess} />
 
       <SectionCard className="space-y-4">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-slate-500">Filter dan navigasi halaman</p>
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Saring riwayat mutasi
-          </h2>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-slate-500">Filter dan navigasi halaman</p>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+              Saring riwayat mutasi
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={isExporting}
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400 sm:w-auto"
+          >
+            {isExporting ? 'Mengekspor...' : 'Export CSV'}
+          </button>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <FormField id="type" label="Tipe" value={filters.type} onChange={handleFilterChange} options={mutationTypeOptions} />
@@ -273,6 +433,100 @@ function MutationPage() {
             onChange={handleFilterChange}
             options={sortDirectionOptions}
           />
+        </div>
+      </SectionCard>
+
+      <SectionCard className="space-y-4">
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-slate-500">Kategori</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Kelola kategori aktif
+          </h2>
+        </div>
+
+        {categoryError ? <ErrorState title="Aksi kategori gagal" message={categoryError} /> : null}
+        <SuccessBanner message={categorySuccess} />
+
+        <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+          <SectionCard tone="subtle" className="space-y-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+              <FormField
+                id="categoryTypeFilter"
+                label="Filter tipe"
+                value={categoryTypeFilter}
+                onChange={handleCategoryFilterChange}
+                options={categoryTypeOptions}
+              />
+            </div>
+
+            {categories.length === 0 ? (
+              <EmptyState
+                title="Belum ada kategori"
+                message="Buat kategori masuk atau keluar agar pengelompokan mutasi lebih rapi."
+              />
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm text-slate-500">
+                  {categoryMeta?.total_items || categories.length} kategori aktif
+                </p>
+                {categories.map((category) => (
+                  <div
+                    key={category.id}
+                    className="flex flex-col gap-3 rounded-2xl bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-slate-900">{category.name}</p>
+                      <span
+                        className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-medium ${getCategoryTypeTone(category.type)}`}
+                      >
+                        {getCategoryTypeLabel(category.type)}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleInactivateCategory(category)}
+                      disabled={inactivatingCategoryId === category.id}
+                      className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-medium text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
+                    >
+                      {inactivatingCategoryId === category.id ? 'Memproses...' : 'Nonaktifkan'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </SectionCard>
+
+          <SectionCard className="space-y-4">
+            <h3 className="text-lg font-semibold tracking-tight text-slate-900">
+              Tambah kategori
+            </h3>
+
+            <form className="space-y-4" onSubmit={handleCategorySubmit}>
+              <FormField
+                id="name"
+                label="Nama kategori"
+                value={categoryForm.name}
+                onChange={handleCategoryFormChange}
+                error={categoryErrors.name}
+              />
+              <FormField
+                id="type"
+                label="Tipe kategori"
+                value={categoryForm.type}
+                onChange={handleCategoryFormChange}
+                options={categoryCreateTypeOptions}
+                error={categoryErrors.type}
+              />
+
+              <button
+                type="submit"
+                disabled={isSubmittingCategory}
+                className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:bg-slate-400"
+              >
+                {isSubmittingCategory ? 'Menyimpan...' : 'Simpan kategori'}
+              </button>
+            </form>
+          </SectionCard>
         </div>
       </SectionCard>
 

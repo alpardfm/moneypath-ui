@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import CategoryBreakdownChart from '../components/charts/CategoryBreakdownChart.jsx'
+import TrendBarChart from '../components/charts/TrendBarChart.jsx'
 import EmptyState from '../components/feedback/EmptyState.jsx'
 import ErrorState from '../components/feedback/ErrorState.jsx'
 import LoadingState from '../components/feedback/LoadingState.jsx'
@@ -6,6 +8,15 @@ import PageContainer from '../components/layout/PageContainer.jsx'
 import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
 import { getDashboardOverview } from '../features/dashboard/dashboard-service.js'
+import {
+  normalizeMonthlyTrend,
+  normalizeOutgoingCategories,
+} from '../features/dashboard/dashboard-utils.js'
+import { getFinancialHealthReport } from '../features/healthscore/healthscore-service.js'
+import {
+  getHealthStatusLabel,
+  getHealthStatusTone,
+} from '../features/healthscore/healthscore-utils.js'
 import { formatAmount } from '../utils/format-number.js'
 
 const metricCards = [
@@ -37,16 +48,36 @@ const metricCards = [
 
 function DashboardPage() {
   const [dashboard, setDashboard] = useState(null)
+  const [healthReport, setHealthReport] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [healthErrorMessage, setHealthErrorMessage] = useState('')
 
   const loadDashboard = async () => {
     try {
       setIsLoading(true)
       setErrorMessage('')
+      setHealthErrorMessage('')
 
-      const overview = await getDashboardOverview()
-      setDashboard(overview)
+      const [dashboardResult, healthResult] = await Promise.allSettled([
+        getDashboardOverview(),
+        getFinancialHealthReport(),
+      ])
+
+      if (dashboardResult.status !== 'fulfilled') {
+        throw dashboardResult.reason
+      }
+
+      setDashboard(dashboardResult.value)
+
+      if (healthResult.status === 'fulfilled') {
+        setHealthReport(healthResult.value)
+      } else {
+        setHealthReport(null)
+        setHealthErrorMessage(
+          healthResult.reason?.message || 'Skor kesehatan keuangan belum bisa dimuat.',
+        )
+      }
     } catch (error) {
       setErrorMessage(error.message || 'Gagal memuat dashboard.')
     } finally {
@@ -95,6 +126,9 @@ function DashboardPage() {
       </PageContainer>
     )
   }
+
+  const monthlyTrend = normalizeMonthlyTrend(dashboard.monthly_trend)
+  const outgoingCategories = normalizeOutgoingCategories(dashboard.outgoing_categories)
 
   return (
     <PageContainer className="space-y-6">
@@ -158,6 +192,95 @@ function DashboardPage() {
             message="Saat wallet pertama dibuat, daftar saldo wallet akan muncul di dashboard ini."
           />
         )}
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+        <SectionCard className="space-y-4">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-slate-500">Kesehatan keuangan</p>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+              Skor saat ini
+            </h2>
+          </div>
+
+          {healthErrorMessage ? (
+            <ErrorState
+              title="Skor belum bisa dimuat"
+              message={healthErrorMessage}
+              actionLabel="Coba lagi"
+              onAction={loadDashboard}
+            />
+          ) : !healthReport ? (
+            <EmptyState
+              title="Skor belum tersedia"
+              message="Saat data keuangan sudah cukup, skor kesehatan akan muncul di sini."
+            />
+          ) : (
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-4xl font-semibold tracking-tight text-slate-900">
+                    {healthReport.score}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    {healthReport.summary}
+                  </p>
+                </div>
+                <span
+                  className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${getHealthStatusTone(healthReport.status)}`}
+                >
+                  {getHealthStatusLabel(healthReport.status)}
+                </span>
+              </div>
+
+              {healthReport.recommendations?.length ? (
+                <div className="space-y-2">
+                  {healthReport.recommendations.slice(0, 3).map((item) => (
+                    <div key={item} className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          )}
+        </SectionCard>
+
+        <SectionCard className="space-y-4">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-slate-500">Tren bulanan</p>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+              Pergerakan masuk dan keluar
+            </h2>
+          </div>
+
+          {monthlyTrend.length ? (
+            <TrendBarChart items={monthlyTrend} />
+          ) : (
+            <EmptyState
+              title="Tren bulanan belum ada"
+              message="Saat mutasi sudah cukup terkumpul, tren bulanan akan muncul di sini."
+            />
+          )}
+        </SectionCard>
+
+        <SectionCard className="space-y-4">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-slate-500">Kategori pengeluaran</p>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+              Breakdown pengeluaran
+            </h2>
+          </div>
+
+          {outgoingCategories.length ? (
+            <CategoryBreakdownChart items={outgoingCategories} />
+          ) : (
+            <EmptyState
+              title="Kategori pengeluaran belum ada"
+              message="Saat pengeluaran sudah dikategorikan, breakdown-nya akan muncul di sini."
+            />
+          )}
+        </SectionCard>
       </div>
     </PageContainer>
   )

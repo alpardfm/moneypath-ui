@@ -7,7 +7,12 @@ import SuccessBanner from '../components/feedback/SuccessBanner.jsx'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import PageHeader from '../components/layout/PageHeader.jsx'
 import SectionCard from '../components/layout/SectionCard.jsx'
-import { createWallet, inactivateWallet, listWallets } from '../features/wallets/wallet-service.js'
+import {
+  createWallet,
+  inactivateWallet,
+  listArchivedWallets,
+  listWallets,
+} from '../features/wallets/wallet-service.js'
 import WalletForm from '../features/wallets/WalletForm.jsx'
 import { formatAmount } from '../utils/format-number.js'
 
@@ -18,9 +23,12 @@ const initialForm = {
 function WalletPage() {
   const location = useLocation()
   const [wallets, setWallets] = useState([])
+  const [archivedWallets, setArchivedWallets] = useState([])
   const [meta, setMeta] = useState(null)
+  const [archiveMeta, setArchiveMeta] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [archiveErrorMessage, setArchiveErrorMessage] = useState('')
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
   const [formError, setFormError] = useState('')
@@ -32,10 +40,28 @@ function WalletPage() {
     try {
       setIsLoading(true)
       setErrorMessage('')
+      setArchiveErrorMessage('')
 
-      const result = await listWallets({ page: 1, pageSize: 20 })
-      setWallets(result.items)
-      setMeta(result.meta)
+      const [activeResult, archivedResult] = await Promise.allSettled([
+        listWallets({ page: 1, pageSize: 20 }),
+        listArchivedWallets({ page: 1, pageSize: 20 }),
+      ])
+
+      if (activeResult.status !== 'fulfilled') {
+        throw activeResult.reason
+      }
+
+      if (archivedResult.status === 'fulfilled') {
+        setArchivedWallets(archivedResult.value.items)
+        setArchiveMeta(archivedResult.value.meta)
+      } else {
+        setArchivedWallets([])
+        setArchiveMeta(null)
+        setArchiveErrorMessage(archivedResult.reason?.message || 'Gagal memuat arsip wallet.')
+      }
+
+      setWallets(activeResult.value.items)
+      setMeta(activeResult.value.meta)
     } catch (error) {
       setErrorMessage(error.message || 'Gagal memuat wallet.')
     } finally {
@@ -124,11 +150,18 @@ function WalletPage() {
 
       await inactivateWallet(wallet.id)
       setWallets((currentWallets) => currentWallets.filter((item) => item.id !== wallet.id))
+      setArchivedWallets((currentWallets) => [wallet, ...currentWallets])
       setFormSuccess(`Wallet ${wallet.name} berhasil dinonaktifkan.`)
       if (meta) {
         setMeta({
           ...meta,
           total_items: Math.max((meta.total_items || wallets.length) - 1, 0),
+        })
+      }
+      if (archiveMeta) {
+        setArchiveMeta({
+          ...archiveMeta,
+          total_items: (archiveMeta.total_items || 0) + 1,
         })
       }
     } catch (error) {
@@ -218,6 +251,48 @@ function WalletPage() {
               </div>
             </>
           )}
+
+          <SectionCard className="space-y-4">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-slate-500">Arsip wallet</p>
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+                {archiveMeta?.total_items || archivedWallets.length} wallet nonaktif
+              </h2>
+            </div>
+
+            {archiveErrorMessage ? (
+              <ErrorState
+                title="Arsip wallet belum bisa dimuat"
+                message={archiveErrorMessage}
+                actionLabel="Coba lagi"
+                onAction={loadWallets}
+              />
+            ) : archivedWallets.length === 0 ? (
+              <EmptyState
+                title="Belum ada wallet arsip"
+                message="Wallet yang dinonaktifkan akan tampil di bagian ini."
+              />
+            ) : (
+              <div className="space-y-3">
+                {archivedWallets.map((wallet) => (
+                  <div
+                    key={wallet.id}
+                    className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-slate-900">{wallet.name}</p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        Saldo terakhir: {formatAmount(wallet.balance)}
+                      </p>
+                    </div>
+                    <span className="inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-600">
+                      Nonaktif
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </SectionCard>
         </section>
 
         <WalletForm

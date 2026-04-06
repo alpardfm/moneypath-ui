@@ -12,20 +12,34 @@ import {
   updateCurrentProfile,
 } from '../features/profile/profile-service.js'
 import { createPasswordForm, createProfileFormFromItem } from '../features/profile/profile-utils.js'
+import {
+  createSettingsFormFromItem,
+  currencyOptions,
+  dateFormatOptions,
+  timezoneOptions,
+  weekStartDayOptions,
+} from '../features/settings/settings-utils.js'
+import { getSettings, updateSettings } from '../features/settings/settings-service.js'
 
 function ProfilePage() {
   const [profile, setProfile] = useState(null)
+  const [settings, setSettings] = useState(null)
   const [profileForm, setProfileForm] = useState(createProfileFormFromItem())
+  const [settingsForm, setSettingsForm] = useState(createSettingsFormFromItem())
   const [passwordForm, setPasswordForm] = useState(createPasswordForm())
   const [profileErrors, setProfileErrors] = useState({})
+  const [settingsErrors, setSettingsErrors] = useState({})
   const [passwordErrors, setPasswordErrors] = useState({})
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [profileError, setProfileError] = useState('')
+  const [settingsError, setSettingsError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [profileSuccess, setProfileSuccess] = useState('')
+  const [settingsSuccess, setSettingsSuccess] = useState('')
   const [passwordSuccess, setPasswordSuccess] = useState('')
   const [isSavingProfile, setIsSavingProfile] = useState(false)
+  const [isSavingSettings, setIsSavingSettings] = useState(false)
   const [isSavingPassword, setIsSavingPassword] = useState(false)
 
   const loadProfile = useCallback(async () => {
@@ -33,9 +47,15 @@ function ProfilePage() {
       setIsLoading(true)
       setErrorMessage('')
 
-      const result = await getCurrentProfile()
-      setProfile(result)
-      setProfileForm(createProfileFormFromItem(result))
+      const [profileResult, settingsResult] = await Promise.all([
+        getCurrentProfile(),
+        getSettings(),
+      ])
+
+      setProfile(profileResult)
+      setProfileForm(createProfileFormFromItem(profileResult))
+      setSettings(settingsResult)
+      setSettingsForm(createSettingsFormFromItem(settingsResult))
     } catch (error) {
       setErrorMessage(error.message || 'Gagal memuat profil.')
     } finally {
@@ -75,6 +95,20 @@ function ProfilePage() {
     }))
   }
 
+  const handleSettingsChange = (event) => {
+    const { name, value } = event.target
+
+    setSettingsForm((currentForm) => ({
+      ...currentForm,
+      [name]: value,
+    }))
+
+    setSettingsErrors((currentErrors) => ({
+      ...currentErrors,
+      [name]: '',
+    }))
+  }
+
   const validateProfileForm = () => {
     const nextErrors = {}
 
@@ -102,6 +136,28 @@ function ProfilePage() {
 
     if (!passwordForm.newPassword.trim()) {
       nextErrors.newPassword = 'Password baru wajib diisi.'
+    }
+
+    return nextErrors
+  }
+
+  const validateSettingsForm = () => {
+    const nextErrors = {}
+
+    if (!settingsForm.preferredCurrency.trim()) {
+      nextErrors.preferredCurrency = 'Mata uang wajib dipilih.'
+    }
+
+    if (!settingsForm.timezone.trim()) {
+      nextErrors.timezone = 'Timezone wajib dipilih.'
+    }
+
+    if (!settingsForm.dateFormat.trim()) {
+      nextErrors.dateFormat = 'Format tanggal wajib dipilih.'
+    }
+
+    if (!settingsForm.weekStartDay.trim()) {
+      nextErrors.weekStartDay = 'Awal minggu wajib dipilih.'
     }
 
     return nextErrors
@@ -156,6 +212,31 @@ function ProfilePage() {
     }
   }
 
+  const handleSettingsSubmit = async (event) => {
+    event.preventDefault()
+
+    const nextErrors = validateSettingsForm()
+    if (Object.keys(nextErrors).length > 0) {
+      setSettingsErrors(nextErrors)
+      return
+    }
+
+    try {
+      setIsSavingSettings(true)
+      setSettingsError('')
+      setSettingsSuccess('')
+
+      const updatedSettings = await updateSettings(settingsForm)
+      setSettings(updatedSettings)
+      setSettingsForm(createSettingsFormFromItem(updatedSettings))
+      setSettingsSuccess('Pengaturan berhasil diperbarui.')
+    } catch (error) {
+      setSettingsError(error.message)
+    } finally {
+      setIsSavingSettings(false)
+    }
+  }
+
   const handleResetProfile = () => {
     setProfileForm(createProfileFormFromItem(profile))
     setProfileErrors({})
@@ -166,6 +247,12 @@ function ProfilePage() {
     setPasswordForm(createPasswordForm())
     setPasswordErrors({})
     setPasswordError('')
+  }
+
+  const handleResetSettings = () => {
+    setSettingsForm(createSettingsFormFromItem(settings))
+    setSettingsErrors({})
+    setSettingsError('')
   }
 
   if (isLoading) {
@@ -240,6 +327,67 @@ function ProfilePage() {
               <button
                 type="button"
                 onClick={handleResetProfile}
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:w-auto"
+              >
+                Atur ulang form
+              </button>
+            </div>
+          </form>
+        </SectionCard>
+
+        <SectionCard className="space-y-5">
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Preferensi
+          </h2>
+
+          {settingsError ? <ErrorState title="Perubahan pengaturan gagal" message={settingsError} /> : null}
+          <SuccessBanner message={settingsSuccess} />
+
+          <form className="space-y-4" onSubmit={handleSettingsSubmit}>
+            <FormField
+              id="preferredCurrency"
+              label="Mata uang"
+              value={settingsForm.preferredCurrency}
+              onChange={handleSettingsChange}
+              options={currencyOptions}
+              error={settingsErrors.preferredCurrency}
+            />
+            <FormField
+              id="timezone"
+              label="Timezone"
+              value={settingsForm.timezone}
+              onChange={handleSettingsChange}
+              options={timezoneOptions}
+              error={settingsErrors.timezone}
+            />
+            <FormField
+              id="dateFormat"
+              label="Format tanggal"
+              value={settingsForm.dateFormat}
+              onChange={handleSettingsChange}
+              options={dateFormatOptions}
+              error={settingsErrors.dateFormat}
+            />
+            <FormField
+              id="weekStartDay"
+              label="Awal minggu"
+              value={settingsForm.weekStartDay}
+              onChange={handleSettingsChange}
+              options={weekStartDayOptions}
+              error={settingsErrors.weekStartDay}
+            />
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                type="submit"
+                disabled={isSavingSettings}
+                className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:bg-slate-400 sm:w-auto"
+              >
+                {isSavingSettings ? 'Menyimpan...' : 'Simpan pengaturan'}
+              </button>
+              <button
+                type="button"
+                onClick={handleResetSettings}
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:w-auto"
               >
                 Atur ulang form
