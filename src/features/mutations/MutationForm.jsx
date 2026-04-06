@@ -1,36 +1,41 @@
-import FormField from '../../components/forms/FormField.jsx'
-import SectionCard from '../../components/layout/SectionCard.jsx'
-import { tenorUnitOptions } from '../debts/debt-constants.js'
-import { debtModeOptions, mutationTypeOptions } from './mutation-utils.js'
+import FormField from "../../components/forms/FormField.jsx";
+import SectionCard from "../../components/layout/SectionCard.jsx";
+import { tenorUnitOptions } from "../debts/debt-constants.js";
+import { debtModeOptions, mutationTypeOptions } from "./mutation-utils.js";
 
 function MutationForm({
-  mode = 'create',
+  mode = "create",
   form,
   errors,
   isSubmitting,
   walletOptions,
+  categoryOptions,
   debtOptions,
   onChange,
   onSubmit,
   onCancel,
 }) {
-  const isEditMode = mode === 'edit'
+  const isEditMode = mode === "edit";
   const showExistingDebtSelect =
-    form.relatedToDebt && (form.type === 'keluar' || (form.type === 'masuk' && form.debtMode === 'existing'))
-  const showDebtMode = form.relatedToDebt && form.type === 'masuk'
-  const showNewDebtFields = form.relatedToDebt && form.type === 'masuk' && form.debtMode === 'new'
+    form.relatedToDebt &&
+    (form.type === "keluar" ||
+      (form.type === "masuk" && form.debtMode === "existing"));
+  const showDebtMode = form.relatedToDebt && form.type === "masuk";
+  const showNewDebtFields =
+    form.relatedToDebt && form.type === "masuk" && form.debtMode === "new";
 
   return (
     <SectionCard className="space-y-5">
       <div className="space-y-2">
         <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
-          {isEditMode ? 'Ubah mutasi' : 'Mutasi baru'}
+          {isEditMode ? "Ubah mutasi" : "Mutasi baru"}
         </span>
         <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-          {isEditMode ? 'Perbarui mutasi.' : 'Catat mutasi baru.'}
+          {isEditMode ? "Perbarui mutasi." : "Catat mutasi baru."}
         </h2>
         <p className="text-sm leading-6 text-slate-600">
-          Semua perubahan saldo harus lewat mutasi. UI ini tidak menyediakan hapus mutasi.
+          Semua perubahan saldo harus lewat mutasi. UI ini tidak menyediakan
+          hapus mutasi.
         </p>
       </div>
 
@@ -53,6 +58,16 @@ function MutationForm({
             error={errors.type}
           />
         </div>
+
+        <FormField
+          id="categoryId"
+          label="Kategori"
+          value={form.categoryId}
+          onChange={onChange}
+          options={categoryOptions}
+          hint="Opsional, tapi disarankan agar mutasi lebih rapi."
+          error={errors.categoryId}
+        />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
@@ -97,10 +112,12 @@ function MutationForm({
               className="mt-1 h-4 w-4 rounded border-slate-300"
             />
             <span>
-              <span className="block text-sm font-medium text-slate-700">Terkait debt</span>
+              <span className="block text-sm font-medium text-slate-700">
+                Terkait debt
+              </span>
               <span className="mt-1 block text-sm leading-6 text-slate-500">
-                Aktifkan jika mutasi ini berhubungan dengan hutang yang sudah ada atau membuat hutang
-                baru dari arus masuk.
+                Aktifkan jika mutasi ini berhubungan dengan hutang yang sudah
+                ada atau membuat hutang baru dari arus masuk.
               </span>
             </span>
           </div>
@@ -131,9 +148,12 @@ function MutationForm({
         {showNewDebtFields ? (
           <SectionCard tone="subtle" className="space-y-4">
             <div className="space-y-1">
-              <p className="text-sm font-medium text-slate-900">Debt baru dari mutasi masuk</p>
+              <p className="text-sm font-medium text-slate-900">
+                Debt baru dari mutasi masuk
+              </p>
               <p className="text-sm leading-6 text-slate-500">
-                Backend hanya mengizinkan satu pilihan: pilih debt yang sudah ada atau buat debt baru.
+                Backend hanya mengizinkan satu pilihan: pilih debt yang sudah
+                ada atau buat debt baru.
               </p>
             </div>
 
@@ -159,7 +179,7 @@ function MutationForm({
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 id="newDebtTenorValue"
-            label="Nilai tenor"
+                label="Nilai tenor"
                 type="number"
                 value={form.newDebtTenorValue}
                 onChange={onChange}
@@ -202,11 +222,11 @@ function MutationForm({
           >
             {isSubmitting
               ? isEditMode
-                ? 'Menyimpan...'
-                : 'Membuat...'
+                ? "Menyimpan..."
+                : "Membuat..."
               : isEditMode
-                ? 'Simpan perubahan'
-                : 'Buat mutasi'}
+                ? "Simpan perubahan"
+                : "Buat mutasi"}
           </button>
 
           {isEditMode ? (
@@ -221,7 +241,7 @@ function MutationForm({
         </div>
       </form>
     </SectionCard>
-  )
+  );
 }
 
-export default MutationForm
+export default MutationForm;

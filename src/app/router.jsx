@@ -1,29 +1,30 @@
-import { Navigate, createBrowserRouter } from 'react-router-dom'
-import AppShell from './layout/AppShell.jsx'
-import PublicOnlyRoute from '../features/auth/PublicOnlyRoute.jsx'
-import ProtectedRoute from '../features/auth/ProtectedRoute.jsx'
-import DashboardPage from '../pages/DashboardPage.jsx'
-import DebtDetailPage from '../pages/DebtDetailPage.jsx'
-import DebtPage from '../pages/DebtPage.jsx'
-import LoginPage from '../pages/LoginPage.jsx'
-import MutationEditPage from '../pages/MutationEditPage.jsx'
-import MutationPage from '../pages/MutationPage.jsx'
-import NotFoundPage from '../pages/NotFoundPage.jsx'
-import NotificationsPage from '../pages/NotificationsPage.jsx'
-import ProfilePage from '../pages/ProfilePage.jsx'
-import RegisterPage from '../pages/RegisterPage.jsx'
-import SummaryPage from '../pages/SummaryPage.jsx'
-import WalletDetailPage from '../pages/WalletDetailPage.jsx'
-import WalletPage from '../pages/WalletPage.jsx'
+import { Navigate, createBrowserRouter } from "react-router-dom";
+import AppShell from "./layout/AppShell.jsx";
+import PublicOnlyRoute from "../features/auth/PublicOnlyRoute.jsx";
+import ProtectedRoute from "../features/auth/ProtectedRoute.jsx";
+import DashboardPage from "../pages/DashboardPage.jsx";
+import DebtDetailPage from "../pages/DebtDetailPage.jsx";
+import DebtPage from "../pages/DebtPage.jsx";
+import LoginPage from "../pages/LoginPage.jsx";
+import MutationEditPage from "../pages/MutationEditPage.jsx";
+import MutationPage from "../pages/MutationPage.jsx";
+import NotFoundPage from "../pages/NotFoundPage.jsx";
+import NotificationsPage from "../pages/NotificationsPage.jsx";
+import ProfilePage from "../pages/ProfilePage.jsx";
+import RecurringPage from "../pages/RecurringPage.jsx";
+import RegisterPage from "../pages/RegisterPage.jsx";
+import SummaryPage from "../pages/SummaryPage.jsx";
+import WalletDetailPage from "../pages/WalletDetailPage.jsx";
+import WalletPage from "../pages/WalletPage.jsx";
 
 export const router = createBrowserRouter(
   [
     {
-      path: '/',
+      path: "/",
       element: <Navigate to="/app/dashboard" replace />,
     },
     {
-      path: '/login',
+      path: "/login",
       element: (
         <PublicOnlyRoute>
           <LoginPage />
@@ -31,7 +32,7 @@ export const router = createBrowserRouter(
       ),
     },
     {
-      path: '/register',
+      path: "/register",
       element: (
         <PublicOnlyRoute>
           <RegisterPage />
@@ -39,7 +40,7 @@ export const router = createBrowserRouter(
       ),
     },
     {
-      path: '/app',
+      path: "/app",
       element: (
         <ProtectedRoute>
           <AppShell />
@@ -51,53 +52,57 @@ export const router = createBrowserRouter(
           element: <Navigate to="/app/dashboard" replace />,
         },
         {
-          path: 'dashboard',
+          path: "dashboard",
           element: <DashboardPage />,
         },
         {
-          path: 'wallets',
+          path: "wallets",
           element: <WalletPage />,
         },
         {
-          path: 'wallets/:walletId',
+          path: "wallets/:walletId",
           element: <WalletDetailPage />,
         },
         {
-          path: 'debts',
+          path: "debts",
           element: <DebtPage />,
         },
         {
-          path: 'debts/:debtId',
+          path: "debts/:debtId",
           element: <DebtDetailPage />,
         },
         {
-          path: 'mutations',
+          path: "mutations",
           element: <MutationPage />,
         },
         {
-          path: 'summary',
+          path: "recurring",
+          element: <RecurringPage />,
+        },
+        {
+          path: "summary",
           element: <SummaryPage />,
         },
         {
-          path: 'profile',
+          path: "profile",
           element: <ProfilePage />,
         },
         {
-          path: 'notifications',
+          path: "notifications",
           element: <NotificationsPage />,
         },
         {
-          path: 'mutations/:mutationId',
+          path: "mutations/:mutationId",
           element: <MutationEditPage />,
         },
       ],
     },
     {
-      path: '*',
+      path: "*",
       element: <NotFoundPage />,
     },
   ],
   {
     basename: import.meta.env.BASE_URL,
   },
-)
+);

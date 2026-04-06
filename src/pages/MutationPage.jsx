@@ -1,28 +1,31 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import EmptyState from '../components/feedback/EmptyState.jsx'
-import ErrorState from '../components/feedback/ErrorState.jsx'
-import LoadingState from '../components/feedback/LoadingState.jsx'
-import SuccessBanner from '../components/feedback/SuccessBanner.jsx'
-import FormField from '../components/forms/FormField.jsx'
-import PageContainer from '../components/layout/PageContainer.jsx'
-import PageHeader from '../components/layout/PageHeader.jsx'
-import SectionCard from '../components/layout/SectionCard.jsx'
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import EmptyState from "../components/feedback/EmptyState.jsx";
+import ErrorState from "../components/feedback/ErrorState.jsx";
+import LoadingState from "../components/feedback/LoadingState.jsx";
+import SuccessBanner from "../components/feedback/SuccessBanner.jsx";
+import FormField from "../components/forms/FormField.jsx";
+import PageContainer from "../components/layout/PageContainer.jsx";
+import PageHeader from "../components/layout/PageHeader.jsx";
+import SectionCard from "../components/layout/SectionCard.jsx";
 import {
   categoryCreateTypeOptions,
   categoryTypeOptions,
   getCategoryTypeLabel,
   getCategoryTypeTone,
-} from '../features/categories/category-utils.js'
+} from "../features/categories/category-utils.js";
 import {
   createCategory,
   exportMutationsCsv,
   inactivateCategory,
   listCategories,
-} from '../features/categories/category-service.js'
-import { listDebts } from '../features/debts/debt-service.js'
-import MutationForm from '../features/mutations/MutationForm.jsx'
-import { createMutation, listMutations } from '../features/mutations/mutation-service.js'
+} from "../features/categories/category-service.js";
+import { listDebts } from "../features/debts/debt-service.js";
+import MutationForm from "../features/mutations/MutationForm.jsx";
+import {
+  createMutation,
+  listMutations,
+} from "../features/mutations/mutation-service.js";
 import {
   createMutationFilterState,
   createMutationFormFromItem,
@@ -32,387 +35,442 @@ import {
   relatedToDebtFilterOptions,
   sortByOptions,
   sortDirectionOptions,
-} from '../features/mutations/mutation-utils.js'
-import { sanitizeDigits } from '../utils/sanitize-input.js'
-import { listWallets } from '../features/wallets/wallet-service.js'
-import { formatAmount } from '../utils/format-number.js'
+} from "../features/mutations/mutation-utils.js";
+import { sanitizeDigits } from "../utils/sanitize-input.js";
+import { listWallets } from "../features/wallets/wallet-service.js";
+import { formatAmount } from "../utils/format-number.js";
 
 function MutationPage() {
-  const location = useLocation()
-  const [mutations, setMutations] = useState([])
-  const [meta, setMeta] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [filters, setFilters] = useState(createMutationFilterState())
-  const [walletOptions, setWalletOptions] = useState([{ value: '', label: 'Pilih wallet' }])
-  const [categoryOptions, setCategoryOptions] = useState([{ value: '', label: 'Semua kategori' }])
-  const [debtOptions, setDebtOptions] = useState([{ value: '', label: 'Pilih debt' }])
-  const [categories, setCategories] = useState([])
-  const [categoryMeta, setCategoryMeta] = useState(null)
-  const [categoryTypeFilter, setCategoryTypeFilter] = useState('')
-  const [categoryForm, setCategoryForm] = useState({ name: '', type: 'keluar' })
-  const [categoryErrors, setCategoryErrors] = useState({})
-  const [categoryError, setCategoryError] = useState('')
-  const [categorySuccess, setCategorySuccess] = useState('')
-  const [isSubmittingCategory, setIsSubmittingCategory] = useState(false)
-  const [inactivatingCategoryId, setInactivatingCategoryId] = useState('')
-  const [isExporting, setIsExporting] = useState(false)
-  const [form, setForm] = useState(() => createMutationFormFromItem())
-  const [errors, setErrors] = useState({})
-  const [formError, setFormError] = useState('')
-  const [formSuccess, setFormSuccess] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const location = useLocation();
+  const [mutations, setMutations] = useState([]);
+  const [meta, setMeta] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [filters, setFilters] = useState(createMutationFilterState());
+  const [walletOptions, setWalletOptions] = useState([
+    { value: "", label: "Pilih wallet" },
+  ]);
+  const [categoryOptions, setCategoryOptions] = useState([
+    { value: "", label: "Semua kategori" },
+  ]);
+  const [debtOptions, setDebtOptions] = useState([
+    { value: "", label: "Pilih debt" },
+  ]);
+  const [categories, setCategories] = useState([]);
+  const [categoryMeta, setCategoryMeta] = useState(null);
+  const [categoryTypeFilter, setCategoryTypeFilter] = useState("");
+  const [categoryForm, setCategoryForm] = useState({
+    name: "",
+    type: "keluar",
+  });
+  const [categoryErrors, setCategoryErrors] = useState({});
+  const [categoryError, setCategoryError] = useState("");
+  const [categorySuccess, setCategorySuccess] = useState("");
+  const [isSubmittingCategory, setIsSubmittingCategory] = useState(false);
+  const [inactivatingCategoryId, setInactivatingCategoryId] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
+  const [form, setForm] = useState(() => createMutationFormFromItem());
+  const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState("");
+  const [formSuccess, setFormSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadDependencies = useCallback(async () => {
     const [walletResult, debtResult, categoryResult] = await Promise.all([
       listWallets({ page: 1, pageSize: 100 }),
       listDebts({ page: 1, pageSize: 100 }),
       listCategories({ page: 1, pageSize: 100 }),
-    ])
+    ]);
 
     setWalletOptions([
-      { value: '', label: 'Pilih wallet' },
+      { value: "", label: "Pilih wallet" },
       ...walletResult.items.map((wallet) => ({
         value: wallet.id,
         label: `${wallet.name} (${formatAmount(wallet.balance)})`,
       })),
-    ])
+    ]);
 
     setDebtOptions([
-      { value: '', label: 'Pilih debt' },
+      { value: "", label: "Pilih debt" },
       ...debtResult.items.map((debt) => ({
         value: debt.id,
         label: `${debt.name} - sisa ${formatAmount(debt.remaining_amount)}`,
       })),
-    ])
+    ]);
 
     setCategoryOptions([
-      { value: '', label: 'Semua kategori' },
+      { value: "", label: "Semua kategori" },
       ...categoryResult.items.map((category) => ({
         value: category.id,
         label: `${category.name} (${getCategoryTypeLabel(category.type)})`,
       })),
-    ])
-  }, [])
+    ]);
+  }, []);
 
   const loadCategories = useCallback(async () => {
     try {
-      setCategoryError('')
+      setCategoryError("");
       const result = await listCategories({
         page: 1,
         pageSize: 50,
         type: categoryTypeFilter,
-      })
-      setCategories(result.items)
-      setCategoryMeta(result.meta)
+      });
+      setCategories(result.items);
+      setCategoryMeta(result.meta);
     } catch (error) {
-      setCategoryError(error.message || 'Gagal memuat kategori.')
+      setCategoryError(error.message || "Gagal memuat kategori.");
     }
-  }, [categoryTypeFilter])
+  }, [categoryTypeFilter]);
 
   const loadMutations = useCallback(async () => {
     try {
-      setIsLoading(true)
-      setErrorMessage('')
+      setIsLoading(true);
+      setErrorMessage("");
 
-      const result = await listMutations(filters)
-      setMutations(result.items)
-      setMeta(result.meta)
+      const result = await listMutations(filters);
+      setMutations(result.items);
+      setMeta(result.meta);
     } catch (error) {
-      setErrorMessage(error.message || 'Gagal memuat mutasi.')
+      setErrorMessage(error.message || "Gagal memuat mutasi.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [filters])
+  }, [filters]);
 
   useEffect(() => {
-    loadDependencies()
-  }, [loadDependencies])
+    loadDependencies();
+  }, [loadDependencies]);
 
   useEffect(() => {
-    loadCategories()
-  }, [loadCategories])
+    loadCategories();
+  }, [loadCategories]);
 
   useEffect(() => {
-    loadMutations()
-  }, [loadMutations])
+    loadMutations();
+  }, [loadMutations]);
 
   useEffect(() => {
     if (location.state?.message) {
-      setFormSuccess(location.state.message)
+      setFormSuccess(location.state.message);
     }
-  }, [location.state])
+  }, [location.state]);
+
+  const mutationCategoryOptions = useMemo(() => {
+    const placeholder =
+      form.type === "masuk" ? "Pilih kategori masuk" : "Pilih kategori keluar";
+
+    return [
+      { value: "", label: placeholder },
+      ...categories
+        .filter((category) => category.type === form.type)
+        .map((category) => ({
+          value: category.id,
+          label: category.name,
+        })),
+    ];
+  }, [categories, form.type]);
 
   const handleFormChange = (event) => {
-    const { name, value, type, checked } = event.target
-    const numberOnlyFields = ['amount', 'newDebtPrincipalAmount', 'newDebtPaymentAmount']
+    const { name, value, type, checked } = event.target;
+    const numberOnlyFields = [
+      "amount",
+      "newDebtPrincipalAmount",
+      "newDebtPaymentAmount",
+    ];
     const nextValue =
-      type === 'checkbox' ? checked : numberOnlyFields.includes(name) ? sanitizeDigits(value) : value
+      type === "checkbox"
+        ? checked
+        : numberOnlyFields.includes(name)
+          ? sanitizeDigits(value)
+          : value;
 
     setForm((currentForm) => {
       const nextForm = {
         ...currentForm,
         [name]: nextValue,
+      };
+
+      if (name === "type" && value === "keluar") {
+        nextForm.debtMode = "existing";
       }
 
-      if (name === 'type' && value === 'keluar') {
-        nextForm.debtMode = 'existing'
+      if (name === "type" && currentForm.categoryId) {
+        const currentCategory = categories.find(
+          (category) => category.id === currentForm.categoryId,
+        );
+        if (currentCategory && currentCategory.type !== value) {
+          nextForm.categoryId = "";
+        }
       }
 
-      if (name === 'relatedToDebt' && !checked) {
-        nextForm.debtId = ''
-        nextForm.debtMode = 'existing'
-        nextForm.newDebtName = ''
-        nextForm.newDebtPrincipalAmount = ''
-        nextForm.newDebtTenorValue = ''
-        nextForm.newDebtTenorUnit = ''
-        nextForm.newDebtPaymentAmount = ''
-        nextForm.newDebtNote = ''
+      if (name === "relatedToDebt" && !checked) {
+        nextForm.debtId = "";
+        nextForm.debtMode = "existing";
+        nextForm.newDebtName = "";
+        nextForm.newDebtPrincipalAmount = "";
+        nextForm.newDebtTenorValue = "";
+        nextForm.newDebtTenorUnit = "";
+        nextForm.newDebtPaymentAmount = "";
+        nextForm.newDebtNote = "";
       }
 
-      if (name === 'debtMode' && value === 'existing') {
-        nextForm.newDebtName = ''
-        nextForm.newDebtPrincipalAmount = ''
-        nextForm.newDebtTenorValue = ''
-        nextForm.newDebtTenorUnit = ''
-        nextForm.newDebtPaymentAmount = ''
-        nextForm.newDebtNote = ''
+      if (name === "debtMode" && value === "existing") {
+        nextForm.newDebtName = "";
+        nextForm.newDebtPrincipalAmount = "";
+        nextForm.newDebtTenorValue = "";
+        nextForm.newDebtTenorUnit = "";
+        nextForm.newDebtPaymentAmount = "";
+        nextForm.newDebtNote = "";
       }
 
-      if (name === 'debtMode' && value === 'new') {
-        nextForm.debtId = ''
+      if (name === "debtMode" && value === "new") {
+        nextForm.debtId = "";
       }
 
-      return nextForm
-    })
+      return nextForm;
+    });
 
     setErrors((currentErrors) => ({
       ...currentErrors,
-      [name]: '',
-    }))
-  }
+      [name]: "",
+    }));
+  };
 
   const handleFilterChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
 
     setFilters((currentFilters) => ({
       ...currentFilters,
       [name]: value,
       page: 1,
-    }))
-  }
+    }));
+  };
 
   const handlePageChange = (nextPage) => {
     setFilters((currentFilters) => ({
       ...currentFilters,
       page: nextPage,
-    }))
-  }
+    }));
+  };
 
   const handleResetFilters = () => {
-    setFilters(createMutationFilterState())
-  }
+    setFilters(createMutationFilterState());
+  };
 
   const handleCategoryFormChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
 
     setCategoryForm((currentForm) => ({
       ...currentForm,
       [name]: value,
-    }))
+    }));
 
     setCategoryErrors((currentErrors) => ({
       ...currentErrors,
-      [name]: '',
-    }))
-  }
+      [name]: "",
+    }));
+  };
 
   const handleCategoryFilterChange = (event) => {
-    setCategoryTypeFilter(event.target.value)
-  }
+    setCategoryTypeFilter(event.target.value);
+  };
 
   const resetForm = () => {
-    setForm(createMutationFormFromItem())
-    setErrors({})
-    setFormError('')
-  }
+    setForm(createMutationFormFromItem());
+    setErrors({});
+    setFormError("");
+  };
 
   const validateForm = () => {
-    const nextErrors = {}
+    const nextErrors = {};
 
     if (!form.walletId) {
-      nextErrors.walletId = 'Wallet wajib dipilih.'
+      nextErrors.walletId = "Wallet wajib dipilih.";
     }
 
     if (!form.type) {
-      nextErrors.type = 'Tipe mutasi wajib dipilih.'
+      nextErrors.type = "Tipe mutasi wajib dipilih.";
     }
 
     if (!String(form.amount).trim()) {
-      nextErrors.amount = 'Nominal wajib diisi.'
+      nextErrors.amount = "Nominal wajib diisi.";
     }
 
     if (!form.description.trim()) {
-      nextErrors.description = 'Deskripsi wajib diisi.'
+      nextErrors.description = "Deskripsi wajib diisi.";
     }
 
     if (!form.happenedAt) {
-      nextErrors.happenedAt = 'Tanggal kejadian wajib diisi.'
+      nextErrors.happenedAt = "Tanggal kejadian wajib diisi.";
     }
 
     if (!form.relatedToDebt) {
-      return nextErrors
+      return nextErrors;
     }
 
-    if (form.type === 'keluar' && !form.debtId) {
-      nextErrors.debtId = 'Mutasi keluar terkait debt wajib memilih debt yang ada.'
+    if (form.type === "keluar" && !form.debtId) {
+      nextErrors.debtId =
+        "Mutasi keluar terkait debt wajib memilih debt yang ada.";
     }
 
-    if (form.type === 'masuk' && form.debtMode === 'existing' && !form.debtId) {
-      nextErrors.debtId = 'Pilih debt yang ingin ditambah sisanya.'
+    if (form.type === "masuk" && form.debtMode === "existing" && !form.debtId) {
+      nextErrors.debtId = "Pilih debt yang ingin ditambah sisanya.";
     }
 
-    if (form.type === 'masuk' && form.debtMode === 'new') {
+    if (form.type === "masuk" && form.debtMode === "new") {
       if (!form.newDebtName.trim()) {
-        nextErrors.newDebtName = 'Nama debt baru wajib diisi.'
+        nextErrors.newDebtName = "Nama debt baru wajib diisi.";
       }
       if (!String(form.newDebtPrincipalAmount).trim()) {
-        nextErrors.newDebtPrincipalAmount = 'Nominal pokok debt baru wajib diisi.'
+        nextErrors.newDebtPrincipalAmount =
+          "Nominal pokok debt baru wajib diisi.";
       }
     }
 
-    return nextErrors
-  }
+    return nextErrors;
+  };
 
   const validateCategoryForm = () => {
-    const nextErrors = {}
+    const nextErrors = {};
 
     if (!categoryForm.name.trim()) {
-      nextErrors.name = 'Nama kategori wajib diisi.'
+      nextErrors.name = "Nama kategori wajib diisi.";
     }
 
     if (!categoryForm.type) {
-      nextErrors.type = 'Tipe kategori wajib dipilih.'
+      nextErrors.type = "Tipe kategori wajib dipilih.";
     }
 
-    return nextErrors
-  }
+    return nextErrors;
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const nextErrors = validateForm()
+    const nextErrors = validateForm();
 
     if (Object.keys(nextErrors).length > 0) {
-      setErrors(nextErrors)
-      return
+      setErrors(nextErrors);
+      return;
     }
 
     try {
-      setIsSubmitting(true)
-      setFormError('')
-      setFormSuccess('')
+      setIsSubmitting(true);
+      setFormError("");
+      setFormSuccess("");
 
-      await createMutation(form)
-      resetForm()
-      setFormSuccess('Mutasi baru berhasil dibuat.')
-      await Promise.all([loadMutations(), loadDependencies()])
+      await createMutation(form);
+      resetForm();
+      setFormSuccess("Mutasi baru berhasil dibuat.");
+      await Promise.all([loadMutations(), loadDependencies()]);
     } catch (error) {
-      setFormError(error.message)
+      setFormError(error.message);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleCategorySubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const nextErrors = validateCategoryForm()
+    const nextErrors = validateCategoryForm();
 
     if (Object.keys(nextErrors).length > 0) {
-      setCategoryErrors(nextErrors)
-      return
+      setCategoryErrors(nextErrors);
+      return;
     }
 
     try {
-      setIsSubmittingCategory(true)
-      setCategoryError('')
-      setCategorySuccess('')
+      setIsSubmittingCategory(true);
+      setCategoryError("");
+      setCategorySuccess("");
 
-      const createdCategory = await createCategory(categoryForm)
+      const createdCategory = await createCategory(categoryForm);
       if (!categoryTypeFilter || categoryTypeFilter === createdCategory.type) {
-        setCategories((currentItems) => [createdCategory, ...currentItems])
+        setCategories((currentItems) => [createdCategory, ...currentItems]);
       }
       setCategoryMeta((currentMeta) =>
         currentMeta
           ? { ...currentMeta, total_items: (currentMeta.total_items || 0) + 1 }
           : currentMeta,
-      )
-      setCategoryForm({ name: '', type: categoryForm.type })
-      setCategoryErrors({})
-      setCategorySuccess('Kategori baru berhasil dibuat.')
+      );
+      setCategoryForm({ name: "", type: categoryForm.type });
+      setCategoryErrors({});
+      setCategorySuccess("Kategori baru berhasil dibuat.");
     } catch (error) {
-      setCategoryError(error.message)
+      setCategoryError(error.message);
     } finally {
-      setIsSubmittingCategory(false)
+      setIsSubmittingCategory(false);
     }
-  }
+  };
 
   const handleInactivateCategory = async (category) => {
     try {
-      setInactivatingCategoryId(category.id)
-      setCategoryError('')
-      setCategorySuccess('')
+      setInactivatingCategoryId(category.id);
+      setCategoryError("");
+      setCategorySuccess("");
 
-      await inactivateCategory(category.id)
-      setCategories((currentItems) => currentItems.filter((item) => item.id !== category.id))
+      await inactivateCategory(category.id);
+      setCategories((currentItems) =>
+        currentItems.filter((item) => item.id !== category.id),
+      );
       setCategoryMeta((currentMeta) =>
         currentMeta
-          ? { ...currentMeta, total_items: Math.max((currentMeta.total_items || categories.length) - 1, 0) }
+          ? {
+              ...currentMeta,
+              total_items: Math.max(
+                (currentMeta.total_items || categories.length) - 1,
+                0,
+              ),
+            }
           : currentMeta,
-      )
-      setCategorySuccess(`Kategori ${category.name} berhasil dinonaktifkan.`)
+      );
+      setCategorySuccess(`Kategori ${category.name} berhasil dinonaktifkan.`);
     } catch (error) {
-      setCategoryError(error.message)
+      setCategoryError(error.message);
     } finally {
-      setInactivatingCategoryId('')
+      setInactivatingCategoryId("");
     }
-  }
+  };
 
   const handleExport = async () => {
     try {
-      setIsExporting(true)
-      setErrorMessage('')
+      setIsExporting(true);
+      setErrorMessage("");
 
-      const result = await exportMutationsCsv(filters)
-      const url = window.URL.createObjectURL(result.blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = result.filename
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(url)
-      setFormSuccess('Export CSV berhasil diunduh.')
+      const result = await exportMutationsCsv(filters);
+      const url = window.URL.createObjectURL(result.blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = result.filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      setFormSuccess("Export CSV berhasil diunduh.");
     } catch (error) {
-      setErrorMessage(error.message || 'Gagal mengekspor mutasi.')
+      setErrorMessage(error.message || "Gagal mengekspor mutasi.");
     } finally {
-      setIsExporting(false)
+      setIsExporting(false);
     }
-  }
+  };
 
   return (
     <PageContainer className="space-y-6">
       <PageHeader eyebrow="Mutasi" title="Mutasi uang." />
 
-      {formError ? <ErrorState title="Aksi mutasi gagal" message={formError} /> : null}
+      {formError ? (
+        <ErrorState title="Aksi mutasi gagal" message={formError} />
+      ) : null}
 
       <SuccessBanner message={formSuccess} />
 
       <SectionCard className="space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
-            <p className="text-sm font-medium text-slate-500">Filter dan navigasi halaman</p>
+            <p className="text-sm font-medium text-slate-500">
+              Filter dan navigasi halaman
+            </p>
             <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
               Saring riwayat mutasi
             </h2>
@@ -431,15 +489,39 @@ function MutationPage() {
               disabled={isExporting}
               className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400 sm:w-auto"
             >
-              {isExporting ? 'Mengekspor...' : 'Export CSV'}
+              {isExporting ? "Mengekspor..." : "Export CSV"}
             </button>
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <FormField id="type" label="Tipe" value={filters.type} onChange={handleFilterChange} options={mutationTypeOptions} />
-          <FormField id="walletId" label="Wallet" value={filters.walletId} onChange={handleFilterChange} options={walletOptions} />
-          <FormField id="categoryId" label="Kategori" value={filters.categoryId} onChange={handleFilterChange} options={categoryOptions} />
-          <FormField id="debtId" label="Debt" value={filters.debtId} onChange={handleFilterChange} options={debtOptions} />
+          <FormField
+            id="type"
+            label="Tipe"
+            value={filters.type}
+            onChange={handleFilterChange}
+            options={mutationTypeOptions}
+          />
+          <FormField
+            id="walletId"
+            label="Wallet"
+            value={filters.walletId}
+            onChange={handleFilterChange}
+            options={walletOptions}
+          />
+          <FormField
+            id="categoryId"
+            label="Kategori"
+            value={filters.categoryId}
+            onChange={handleFilterChange}
+            options={categoryOptions}
+          />
+          <FormField
+            id="debtId"
+            label="Debt"
+            value={filters.debtId}
+            onChange={handleFilterChange}
+            options={debtOptions}
+          />
           <FormField
             id="relatedToDebt"
             label="Relasi debt"
@@ -447,9 +529,27 @@ function MutationPage() {
             onChange={handleFilterChange}
             options={relatedToDebtFilterOptions}
           />
-          <FormField id="from" label="Dari" type="datetime-local" value={filters.from} onChange={handleFilterChange} />
-          <FormField id="to" label="Sampai" type="datetime-local" value={filters.to} onChange={handleFilterChange} />
-          <FormField id="sortBy" label="Urutkan berdasarkan" value={filters.sortBy} onChange={handleFilterChange} options={sortByOptions} />
+          <FormField
+            id="from"
+            label="Dari"
+            type="datetime-local"
+            value={filters.from}
+            onChange={handleFilterChange}
+          />
+          <FormField
+            id="to"
+            label="Sampai"
+            type="datetime-local"
+            value={filters.to}
+            onChange={handleFilterChange}
+          />
+          <FormField
+            id="sortBy"
+            label="Urutkan berdasarkan"
+            value={filters.sortBy}
+            onChange={handleFilterChange}
+            options={sortByOptions}
+          />
           <FormField
             id="sortDirection"
             label="Arah urutan"
@@ -468,7 +568,9 @@ function MutationPage() {
           </h2>
         </div>
 
-        {categoryError ? <ErrorState title="Aksi kategori gagal" message={categoryError} /> : null}
+        {categoryError ? (
+          <ErrorState title="Aksi kategori gagal" message={categoryError} />
+        ) : null}
         <SuccessBanner message={categorySuccess} />
 
         <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
@@ -491,7 +593,8 @@ function MutationPage() {
             ) : (
               <div className="space-y-3">
                 <p className="text-sm text-slate-500">
-                  {categoryMeta?.total_items || categories.length} kategori aktif
+                  {categoryMeta?.total_items || categories.length} kategori
+                  aktif
                 </p>
                 {categories.map((category) => (
                   <div
@@ -499,7 +602,9 @@ function MutationPage() {
                     className="flex flex-col gap-3 rounded-2xl bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
                   >
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-slate-900">{category.name}</p>
+                      <p className="truncate text-sm font-medium text-slate-900">
+                        {category.name}
+                      </p>
                       <span
                         className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-medium ${getCategoryTypeTone(category.type)}`}
                       >
@@ -512,7 +617,9 @@ function MutationPage() {
                       disabled={inactivatingCategoryId === category.id}
                       className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-medium text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
                     >
-                      {inactivatingCategoryId === category.id ? 'Memproses...' : 'Nonaktifkan'}
+                      {inactivatingCategoryId === category.id
+                        ? "Memproses..."
+                        : "Nonaktifkan"}
                     </button>
                   </div>
                 ))}
@@ -547,7 +654,7 @@ function MutationPage() {
                 disabled={isSubmittingCategory}
                 className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:bg-slate-400"
               >
-                {isSubmittingCategory ? 'Menyimpan...' : 'Simpan kategori'}
+                {isSubmittingCategory ? "Menyimpan..." : "Simpan kategori"}
               </button>
             </form>
           </SectionCard>
@@ -576,7 +683,9 @@ function MutationPage() {
           ) : (
             <>
               <SectionCard className="space-y-3">
-                <p className="text-sm font-medium text-slate-500">Riwayat mutasi</p>
+                <p className="text-sm font-medium text-slate-500">
+                  Riwayat mutasi
+                </p>
                 <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
                   {meta?.total_items || mutations.length} mutasi ditemukan
                 </h2>
@@ -594,7 +703,14 @@ function MutationPage() {
                   </span>
                   <button
                     type="button"
-                    disabled={!meta || filters.page >= Math.ceil((meta.total_items || 0) / (meta.page_size || filters.pageSize || 10))}
+                    disabled={
+                      !meta ||
+                      filters.page >=
+                        Math.ceil(
+                          (meta.total_items || 0) /
+                            (meta.page_size || filters.pageSize || 10),
+                        )
+                    }
                     onClick={() => handlePageChange(filters.page + 1)}
                     className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400"
                   >
@@ -609,7 +725,9 @@ function MutationPage() {
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${getMutationTone(mutation.type)}`}>
+                          <span
+                            className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${getMutationTone(mutation.type)}`}
+                          >
                             {getMutationLabel(mutation.type)}
                           </span>
                           {mutation.related_to_debt ? (
@@ -621,9 +739,13 @@ function MutationPage() {
                         <p className="mt-3 text-lg font-semibold text-slate-900">
                           {formatAmount(mutation.amount)}
                         </p>
-                        <p className="mt-1 text-sm text-slate-500">{mutation.description}</p>
                         <p className="mt-1 text-sm text-slate-500">
-                          {new Date(mutation.happened_at).toLocaleString('id-ID')}
+                          {mutation.description}
+                        </p>
+                        <p className="mt-1 text-sm text-slate-500">
+                          {new Date(mutation.happened_at).toLocaleString(
+                            "id-ID",
+                          )}
                         </p>
                       </div>
 
@@ -647,13 +769,14 @@ function MutationPage() {
           errors={errors}
           isSubmitting={isSubmitting}
           walletOptions={walletOptions}
+          categoryOptions={mutationCategoryOptions}
           debtOptions={debtOptions}
           onChange={handleFormChange}
           onSubmit={handleSubmit}
         />
       </div>
     </PageContainer>
-  )
+  );
 }
 
-export default MutationPage
+export default MutationPage;
